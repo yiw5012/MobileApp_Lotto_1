@@ -65,6 +65,17 @@ class _RegisterPagesState extends State<RegisterPages> {
                             ),
                           ),
                         ),
+                        SizedBox(
+                          width: 450,
+                          child: TextField(
+                            // password
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'password',
+                              hintText: 'Enter your password',
+                            ),
+                          ),
+                        ),
                         Padding(
                           padding: const EdgeInsets.all(20.0),
                           child: SizedBox(
