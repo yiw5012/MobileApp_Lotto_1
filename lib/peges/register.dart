@@ -31,17 +31,17 @@ class _RegisterPagesState extends State<RegisterPages> {
 
                 Card(
                   //การ์ด
-                  margin: const EdgeInsets.all(20),
+                  margin: const EdgeInsets.all(10),
                   child: SizedBox(
                     // boxใหญ่
                     width: 500,
-                    height: 350,
+                    height: 500,
                     child: Column(
                       // คอลัม
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.all(20.0),
+                          padding: const EdgeInsets.all(10.0),
                           child: SizedBox(
                             // username
                             width: 450,
@@ -54,30 +54,50 @@ class _RegisterPagesState extends State<RegisterPages> {
                             ),
                           ),
                         ),
-                        SizedBox(
-                          width: 450,
-                          child: TextField(
-                            // password
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'password',
-                              hintText: 'Enter your password',
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 450,
-                          child: TextField(
-                            // password
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'password',
-                              hintText: 'Enter your password',
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: SizedBox(
+                            // username
+                            width: 450,
+                            child: TextField(
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Email',
+                                hintText: 'Enter your Email',
+                              ),
                             ),
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(20.0),
+                          padding: const EdgeInsets.all(10.0),
+                          child: SizedBox(
+                            width: 450,
+                            child: TextField(
+                              // password
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'password',
+                                hintText: 'Enter your password',
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: SizedBox(
+                            width: 450,
+                            child: TextField(
+                              // password
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'password confirm ',
+                                hintText: 'Enter your password confirm',
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
                           child: SizedBox(
                             // login button
                             width: 450,
