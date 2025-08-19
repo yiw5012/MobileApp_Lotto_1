@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lotto_1/peges/Member.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -115,17 +116,68 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
 
-      bottomNavigationBar: BottomAppBar(
+     bottomNavigationBar: BottomAppBar(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: const [
-            IconButton(icon: Icon(Icons.home), onPressed: null),
-            IconButton(icon: Icon(Icons.class_sharp), onPressed: null),
-            IconButton(icon: Icon(Icons.navigation), onPressed: null),
-            IconButton(icon: Icon(Icons.person), onPressed: null),
+          children: [
+            // Icon button for "หน้าแรก" (Home)
+            TextButton(
+              onPressed: () {},
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(Icons.home),
+                  Text('หน้าแรก', style: TextStyle(fontSize: 12)),
+                ],
+              ),
+            ),
+            // Icon button for "คำสั่งซื้อ" (Orders)
+            TextButton(
+              onPressed: () {},
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(Icons.class_sharp),
+                  Text('คำสั่งซื้อ', style: TextStyle(fontSize: 12)),
+                ],
+              ),
+            ),
+            // Icon button for "ตะกร้า" (Cart)
+            TextButton(
+              onPressed: () {},
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(Icons.shopping_cart),
+                  Text('ตะกร้า', style: TextStyle(fontSize: 12)),
+                ],
+              ),
+            ),
+            // Icon button for "สมาชิก" (Member)
+            TextButton(
+              onPressed: To_member,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(Icons.person),
+                  Text('สมาชิก', style: TextStyle(fontSize: 12)),
+                ],
+              ),
+            ),
           ],
         ),
       ),
     );
   }
+  void To_member() {
+      Navigator.push(context,
+    MaterialPageRoute(builder: (context) => Member())
+    );
+  }
+    void To_homepage() {
+    Navigator.push(context,
+    MaterialPageRoute(builder: (context) => HomePage())
+    );
+  }
 }
+
