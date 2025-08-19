@@ -38,7 +38,7 @@ class _LoginPegesState extends State<LoginPeges> {
                     width: 500,
                     height: 350,
                     child: Column(
-                      // คอลัม
+                      // คอล
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Padding(
