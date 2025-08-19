@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lotto_1/peges/Member.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -118,14 +119,20 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomAppBar(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: const [
-            IconButton(icon: Icon(Icons.home), onPressed: null),
-            IconButton(icon: Icon(Icons.class_sharp), onPressed: null),
-            IconButton(icon: Icon(Icons.navigation), onPressed: null),
-            IconButton(icon: Icon(Icons.person), onPressed: null),
+          children: [
+            IconButton(icon: const Icon(Icons.home), onPressed: home),
+            const IconButton(icon: Icon(Icons.class_sharp), onPressed: null),
+            const IconButton(icon: Icon(Icons.navigation), onPressed: null),
+            IconButton(icon: const Icon(Icons.person), onPressed: member),
           ],
         ),
       ),
     );
+  }
+
+  void home() {}
+
+  void member() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => Member()));
   }
 }
