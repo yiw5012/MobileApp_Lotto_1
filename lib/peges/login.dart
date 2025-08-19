@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lotto_1/peges/homepage.dart';
 import 'package:lotto_1/peges/register.dart';
 
 class LoginPeges extends StatefulWidget {
@@ -76,7 +77,7 @@ class _LoginPegesState extends State<LoginPeges> {
                             width: 450,
                             height: 50,
                             child: FilledButton(
-                              onPressed: () {},
+                              onPressed: login,
                               child: const Text("Login"),
                             ),
                           ),
@@ -111,6 +112,13 @@ class _LoginPegesState extends State<LoginPeges> {
           ),
         ),
       ),
+    );
+  }
+
+  void login() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const HomePage()),
     );
   }
 
