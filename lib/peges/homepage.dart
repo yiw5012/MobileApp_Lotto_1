@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lotto_1/peges/cart.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,14 +16,21 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomAppBar(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: const [
-            IconButton(icon: Icon(Icons.home), onPressed: null),
-            IconButton(icon: Icon(Icons.class_sharp), onPressed: null),
-            IconButton(icon: Icon(Icons.navigation), onPressed: null),
-            IconButton(icon: Icon(Icons.person), onPressed: null),
+          children: [
+            IconButton(icon: const Icon(Icons.home), onPressed: () {}),
+            IconButton(icon: const Icon(Icons.class_sharp), onPressed: () {}),
+            IconButton(icon: const Icon(Icons.navigation), onPressed: cart),
+            IconButton(icon: const Icon(Icons.person), onPressed: () {}),
           ],
         ),
       ),
+    );
+  }
+
+  void cart() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const Cartpage()),
     );
   }
 }
