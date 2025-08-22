@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:lotto_1/peges/homepage.dart';
+import 'package:lotto_1/pages/homepage.dart';
 
 class Member extends StatefulWidget {
   const Member({super.key});

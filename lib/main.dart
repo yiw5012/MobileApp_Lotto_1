@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lotto_1/peges/Member.dart';
-import 'package:lotto_1/peges/homepage.dart';
-import 'package:lotto_1/peges/login.dart';
+import 'package:lotto_1/pages/Member.dart';
+import 'package:lotto_1/pages/homepage.dart';
+import 'package:lotto_1/pages/login.dart';
 
 
 void main() {

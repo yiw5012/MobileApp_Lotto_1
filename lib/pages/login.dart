@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lotto_1/peges/homepage.dart';
-import 'package:lotto_1/peges/register.dart';
+import 'package:lotto_1/pages/homepage.dart';
+import 'package:lotto_1/pages/register.dart';
 
 class LoginPeges extends StatefulWidget {
   const LoginPeges({super.key});
