@@ -123,7 +123,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(icon: const Icon(Icons.home), onPressed: home),
-            const IconButton(icon: Icon(Icons.class_sharp), onPressed: null),
+            IconButton(icon: const Icon(Icons.class_sharp), onPressed: member),
             const IconButton(icon: Icon(Icons.navigation), onPressed: null),
             IconButton(icon: const Icon(Icons.person), onPressed: member),
           ],
