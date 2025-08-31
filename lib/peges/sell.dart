@@ -32,8 +32,8 @@ class _sellState extends State<sell> {
                   child: DefaultTabController(
                     length: 4,
                     child: Column(
-                      children: const [
-                        TabBar(
+                      children: [
+                        const TabBar(
                           tabs: [
                             Tab(text: "ยังไม่ชำระ"),
                             Tab(text: 'รอตรวจสอบ'),
@@ -43,14 +43,92 @@ class _sellState extends State<sell> {
                         ),
                         Expanded(
                           child: TabBarView(
-                            children: const [
-                              Center(child: Text("รายการยังไม่ชำระ")),
-                              Center(child: Text("รายการรอตรวจสอบ")),
-                              Center(child: Text("รายการไม่สำเร็จ")),
-                              Center(child: Text("รายการสำเร็จ")),
+                            children: [
+                              ListView(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Card(
+                                      child: Container(
+                                        child: Text(
+                                          "ยังไม่มีรายการชำระ",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              ListView(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Card(
+                                      child: Container(
+                                        child: Text(
+                                          "ยังไม่มีรายการตรวจสอบ",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              ListView(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Card(
+                                      child: Container(
+                                        child: Text(
+                                          "ยังไม่มีรายการไม่สำเร็จ",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              ListView(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Card(
+                                      child: Container(
+                                        child: Text(
+                                          "ยังไม่มีรายการสำเร็จ",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         ),
+                        // Expanded(
+                        //   child: TabBarView(
+                        //     children: const [
+                        //       Center(child: Text("รายการยังไม่ชำระ")),
+                        //       Center(child: Text("รายการรอตรวจสอบ")),
+                        //       Center(child: Text("รายการไม่สำเร็จ")),
+                        //       Center(child: Text("รายการสำเร็จ")),
+                        //     ],
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
