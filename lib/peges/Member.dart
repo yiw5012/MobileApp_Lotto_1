@@ -12,7 +12,7 @@ class MemberState extends State<Member> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Memberpage")),
-      body: Container(),
+      body: Container(color: Colors.redAccent),
     );
   }
 }
