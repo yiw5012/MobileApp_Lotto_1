@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lotto_1/peges/login.dart';
+import 'package:lotto_1/pages/login.dart';
 
 void main() {
   runApp(const MyApp());

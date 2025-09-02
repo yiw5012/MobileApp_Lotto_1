@@ -1,8 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:lotto_1/peges/Member.dart';
-import 'package:lotto_1/peges/cart.dart';
-import 'package:lotto_1/peges/sell.dart';
+import 'package:lotto_1/pages/Member.dart';
+import 'package:lotto_1/pages/cart.dart';
+import 'package:lotto_1/pages/sell.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
