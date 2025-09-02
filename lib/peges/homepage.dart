@@ -1,5 +1,8 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:lotto_1/peges/Member.dart';
+import 'package:lotto_1/peges/cart.dart';
+import 'package:lotto_1/peges/sell.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -9,6 +12,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String lottoNumber = "------"; // ค่าเริ่มต้น
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,6 +40,8 @@ class _HomePageState extends State<HomePage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+
+                // ✅ แสดงเลขที่สุ่มได้
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
@@ -42,99 +49,155 @@ class _HomePageState extends State<HomePage> {
                       width: 250,
                       height: 150,
                       color: Colors.white,
-
                       child: Column(
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(6, (index) {
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-
-                                child: Container(
-                                  width: 25,
-                                  height: 25,
-                                  color: Colors.blue,
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    '${index + 1}',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.white,
+                            children: lottoNumber
+                                .split('')
+                                .map(
+                                  (digit) => Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: Container(
+                                      width: 30,
+                                      height: 30,
+                                      color: Colors.blue,
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        digit,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                            }),
+                                )
+                                .toList(),
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  // Action for the button
-                                },
-                                child: const Text('สุ่มหวย'),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ElevatedButton(
+                                  onPressed: randLotto,
+                                  child: const Text('สุ่มหวย'),
+                                ),
                               ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  // Action for the button
-                                },
-                                child: const Text('ค้นหาเลข'),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ElevatedButton(
+                                  onPressed: FindLotto,
+                                  child: const Text('ค้นหาเลข'),
+                                ),
                               ),
                             ],
                           ),
-                          ElevatedButton(
-                            onPressed: () {
-                              // Action for the button
-                            },
-                            child: const Text('ตรวจสลากของคุณ'),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ElevatedButton(
+                              onPressed: sell,
+                              child: const Text('ตรวจสลากของคุณ'),
+                            ),
                           ),
                         ],
                       ),
                     ),
                   ),
                 ),
-
-                Card(
-                  margin: const EdgeInsets.all(20),
-                  child: SizedBox(
-                    // boxใหญ่
-                    width: 300,
-                    height: 150,
-                    child: Image.network(
-                      'https://static.thairath.co.th/media/dFQROr7oWzulq5Fa5K4BG1afANvfhsI0uwEO1wESe3ZeLKGyfPL4Ti6DjFSG9nsKQwF.jpg',
-                      // รูปภาพ
-                      width: 250,
-                      height: 250,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                Card(),
               ],
             ),
           ),
         ),
       ),
 
+      // Bottom nav bar
       bottomNavigationBar: BottomAppBar(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            IconButton(icon: const Icon(Icons.home), onPressed: home),
-            IconButton(icon: const Icon(Icons.class_sharp), onPressed: member),
-            const IconButton(icon: Icon(Icons.navigation), onPressed: null),
-            IconButton(icon: const Icon(Icons.person), onPressed: member),
+            TextButton(
+              onPressed: home,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(Icons.home),
+                  Text('หน้าแรก', style: TextStyle(fontSize: 12)),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: sell,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(Icons.class_sharp),
+                  Text('คำสั่งซื้อ', style: TextStyle(fontSize: 12)),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: cart,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(Icons.shopping_cart),
+                  Text('ตะกร้า', style: TextStyle(fontSize: 12)),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: member,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(Icons.person),
+                  Text('สมาชิก', style: TextStyle(fontSize: 12)),
+                ],
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  void home() {}
+  void home() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const HomePage()),
+    );
+  }
 
   void member() {
     Navigator.push(context, MaterialPageRoute(builder: (context) => Member()));
+  }
+
+  void sell() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const Sell()),
+    );
+  }
+
+  void cart() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const Cartpage()),
+    );
+  }
+
+  void randLotto() {
+    final random = Random();
+    final newNumber = random.nextInt(1000000).toString().padLeft(6, '0');
+    setState(() {
+      lottoNumber = newNumber;
+    });
+  }
+
+  void FindLotto() {
+    // ไว้ทำค้นหาเลขทีหลัง
   }
 }

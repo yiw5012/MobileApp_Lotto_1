@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:lotto_1/peges/Member.dart';
+import 'package:lotto_1/peges/homepage.dart';
+import 'package:lotto_1/peges/sell.dart';
 
-class Cartpage extends StatelessWidget {
+class Cartpage extends StatefulWidget {
   const Cartpage({super.key});
 
+  @override
+  State<Cartpage> createState() => _CartpageState();
+}
+
+class _CartpageState extends State<Cartpage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,7 +62,9 @@ class Cartpage extends StatelessWidget {
                     child: Image.network(
                       "https://s359.kapook.com/pagebuilder/e9389651-319a-4b69-a69c-2f3ad413b6cc.jpg",
                       width: double.infinity, // ให้เต็ม card
-                      height: 200, // กำหนดความสูงที่เหมาะสม
+                      height: 200,
+
+                      // กำหนดความสูงที่เหมาะสม
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -122,13 +132,78 @@ class Cartpage extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            IconButton(icon: const Icon(Icons.home), onPressed: () {}),
-            IconButton(icon: const Icon(Icons.class_sharp), onPressed: () {}),
-            IconButton(icon: const Icon(Icons.navigation), onPressed: () {}),
-            IconButton(icon: const Icon(Icons.person), onPressed: () {}),
+            // Icon button for "หน้าแรก" (Home)
+            TextButton(
+              onPressed: home,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(Icons.home),
+                  Text('หน้าแรก', style: TextStyle(fontSize: 12)),
+                ],
+              ),
+            ),
+            // Icon button for "คำสั่งซื้อ" (Orders)
+            TextButton(
+              onPressed: sell,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(Icons.class_sharp),
+                  Text('คำสั่งซื้อ', style: TextStyle(fontSize: 12)),
+                ],
+              ),
+            ),
+            // Icon button for "ตะกร้า" (Cart)
+            TextButton(
+              onPressed: cart,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(Icons.shopping_cart),
+                  Text('ตะกร้า', style: TextStyle(fontSize: 12)),
+                ],
+              ),
+            ),
+            // Icon button for "สมาชิก" (Member)
+            TextButton(
+              onPressed: member,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(Icons.person),
+                  Text('สมาชิก', style: TextStyle(fontSize: 12)),
+                ],
+              ),
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  void home() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const HomePage()),
+    );
+  }
+
+  void member() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => Member()));
+  }
+
+  void sell() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const Sell()),
+    );
+  }
+
+  void cart() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const Cartpage()),
     );
   }
 }
