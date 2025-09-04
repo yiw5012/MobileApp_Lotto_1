@@ -13,7 +13,7 @@ class Member extends StatefulWidget {
 class _MemberState extends State<Member> {
   String credit_left = "200";
   String username = " YEW";
-  String userId = "P123456";
+  String userId = "111213";
   var creditctl = TextEditingController();
   var userctl = TextEditingController();
   var fullnamectl = TextEditingController();
