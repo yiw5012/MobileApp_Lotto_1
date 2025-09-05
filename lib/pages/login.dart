@@ -144,7 +144,7 @@ class _LoginPegesState extends State<LoginPeges> {
     var data = {'user_name': username, 'password': password};
     http
         .post(
-          Uri.parse('http://10.0.2.2:5000/login'),
+          Uri.parse('https://my-backend-37003238647.asia-southeast1.run.app/login'),
           headers: {"Content-Type": "application/json; charset=utf-8"},
           body: jsonEncode(data),
         )
