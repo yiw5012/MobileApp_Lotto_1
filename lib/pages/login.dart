@@ -1,6 +1,14 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:lotto_1/model/response/user_login_post_res.dart';
 import 'package:lotto_1/pages/homepage.dart';
 import 'package:lotto_1/pages/register.dart';
+import "package:http/http.dart" as http;
+import "dart:convert";
+import 'package:lotto_1/config/config.dart';
+
+import 'dart:developer' as developer;
 
 class LoginPeges extends StatefulWidget {
   const LoginPeges({super.key});
@@ -10,6 +18,19 @@ class LoginPeges extends StatefulWidget {
 }
 
 class _LoginPegesState extends State<LoginPeges> {
+  var username_ctl = TextEditingController();
+  var password_ctl = TextEditingController();
+  String url = '';
+
+  @override
+  void initState() {
+    super.initState();
+    Configuration.getConfig().then((config) {
+      url = config['apiEndpoint'];
+    });
+  }
+
+  String button = 'Sign in';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,6 +69,7 @@ class _LoginPegesState extends State<LoginPeges> {
                             // username
                             width: 450,
                             child: TextField(
+                              controller: username_ctl,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                                 labelText: 'Username',
@@ -62,6 +84,7 @@ class _LoginPegesState extends State<LoginPeges> {
                             width: 450,
                             child: TextField(
                               // password
+                              controller: password_ctl,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                                 labelText: 'password',
@@ -78,7 +101,7 @@ class _LoginPegesState extends State<LoginPeges> {
                             height: 50,
                             child: FilledButton(
                               onPressed: login,
-                              child: const Text("Login"),
+                              child: Text("$button"),
                             ),
                           ),
                         ),
@@ -116,11 +139,82 @@ class _LoginPegesState extends State<LoginPeges> {
   }
 
   void login() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const HomePage()),
-    );
+    var username = username_ctl.text;
+    var password = password_ctl.text;
+    var data = {'user_name': username, 'password': password};
+    http
+        .post(
+          Uri.parse('http://10.0.2.2:5000/login'),
+          headers: {"Content-Type": "application/json; charset=utf-8"},
+          body: jsonEncode(data),
+        )
+        .then((value) {
+          if (value.statusCode == 200) {
+            developer.log(value.body);
+            UserLoginPostRes userlogin = userLoginPostResFromJson(value.body);
+            // developer.log(value.body);
+            developer.log(userlogin.username);
+            developer.log(userlogin.email);
+            if (userlogin.loginMach != null && userlogin.loginMach) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const HomePage()),
+              );
+            }
+          }else{
+              developer.log('password not valid');
+            }
+        })
+        .catchError((error) {
+          developer.log(error);
+        });
   }
+  // Future<void> login() async {
+  //   var username = username_ctl.text;
+  //   var password = password_ctl.text;
+  //   // final res = await http.get(Uri.parse('http://10.0.2.2:5000'));
+  //   // final decode = json.decode(res.body) as Map<String, dynamic>;
+  //   final url = Uri.parse('http://10.0.2.2:5000/users');
+
+  //   final res = await http.post(
+  //     url,
+  //     headers: <String, String>{
+  //       'Content-Type': 'application/json; charset=UTF-8',
+  //     },
+  //     // 3. Create a JSON body with the username and password
+  //     body: jsonEncode(<String, String>{
+  //       'username': username,
+  //       'password': password,
+  //     }),
+  //   );
+  //   if (res.statusCode == 200) {
+  //     // Backend successfully processed the login
+  //     final decoded = json.decode(res.body) as Map<String, dynamic>;
+  //     if (decoded is Map<String, dynamic>) {
+  //       // If the backend returns a single object
+  //       print('Login successful: ${decoded['message']}');
+  //       // ... your login success logic
+  //       Navigator.push(
+  //         context,
+  //         MaterialPageRoute(builder: (context) => const HomePage()),
+  //       );
+  //     } else if (decoded is List<dynamic>) {
+  //       // If the backend returns a list of objects
+  //       print('Received a list from the server.');
+  //       // You may need to handle the list of data
+  //       // For example, if you want to get the first item's message:
+  //       if (decoded.isNotEmpty && decoded[0] is Map<String, dynamic>) {
+  //         print('First item message: ${decoded[0]['message']}');
+  //       }
+  //     } else {
+  //       // Handle unexpected response types
+  //       print('Unexpected response type from the server.');
+  //     }
+  //   }
+  //   // setState(() {
+  //   //   button = decode['greetings'];
+  //   // });
+  // }
 
   void register() {
     Navigator.push(
