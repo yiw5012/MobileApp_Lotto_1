@@ -99,6 +99,20 @@ class _RegisterPagesState extends State<RegisterPages> {
                         Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: SizedBox(
+                            width: 450,
+                            child: TextField(
+                              // password
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'money',
+                                hintText: 'Enter your first money',
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: SizedBox(
                             // login button
                             width: 450,
                             height: 50,
