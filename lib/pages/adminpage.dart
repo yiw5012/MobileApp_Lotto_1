@@ -61,29 +61,122 @@ class _AdminContentState extends State<AdminContent> {
       appBar: AppBar(title: const Text("Admin Page"), centerTitle: false),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text(
-              "Welcome to the Admin Page",
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Text(
+              "สุ่มออก",
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.amberAccent,
+                color: Color.fromARGB(255, 255, 255, 255),
               ),
             ),
-            SizedBox(height: 20),
-            Text(
-              "Here you can manage the application settings and user data.",
+            const Text(
+              "รางวัลลอตเตอรี่",
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(
+                fontSize: 16,
+                color: Color.fromARGB(255, 255, 255, 255),
+              ),
             ),
-            SizedBox(height: 20),
-            Text(
-              "Use the navigation bar below to access different sections.",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: const Text(
+                "งวดวันที่ 16 สิงหาคม 2568",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Color.fromARGB(255, 255, 255, 255),
+                ),
+              ),
             ),
-            SizedBox(height: 300, width: 200),
+            SizedBox(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      side: BorderSide(
+                        width: 2.0,
+                        color: const Color.fromARGB(255, 0, 0, 0),
+                      ),
+                      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+
+                      // สีพื้นหลังปุ่ม
+                    ),
+                    onPressed: () {
+                      // TODO: เพิ่มโค้ดตอนกดปุ่มสุ่ม
+                    },
+                    icon: const Icon(
+                      Icons.star,
+                      size: 24.0,
+                      color: Color.fromARGB(255, 0, 0, 0),
+                    ),
+                    label: const Text(
+                      "สุ่มรางวัล",
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 0, 0, 0),
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      side: BorderSide(
+                        width: 2.0,
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      backgroundColor: const Color.fromARGB(255, 10, 2, 159),
+                      // สีพื้นหลังปุ่ม
+                    ),
+                    child: Text(
+                      "รีเช็ตระบบ",
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: SingleChildScrollView(
+                  child: Container(
+                    width: 280,
+                    height: 350,
+                    child: Column(
+                      children: const [
+                        Text(
+                          "รางวัลที่ 1",
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          "123456",
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
