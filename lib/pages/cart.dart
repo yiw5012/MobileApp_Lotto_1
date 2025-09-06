@@ -30,71 +30,77 @@ class _CartpageState extends State<Cartpage> {
                   colors: [Colors.pinkAccent, Colors.red],
                 ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: const [
-                  StepItem(
-                    icon: Icons.shopping_cart,
-                    label: "ตะกร้า",
-                    active: true,
-                  ),
-                  StepItem(icon: Icons.attach_money, label: "ชำระเงิน"),
-                  StepItem(icon: Icons.check_circle, label: "สำเร็จ"),
-                ],
+              child: const Text(
+                "ลอตเตอรี่ของคุณ",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
 
             const SizedBox(height: 10),
 
             // --- Card ลอตเตอรี่ ---
-            // --- Card ลอตเตอรี่ ---
             Card(
               margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.stretch, // ให้เต็มความกว้าง
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // --- รูปภาพลอตเตอรี่ ---
+                  // --- รูปภาพ (ใส่ทีหลังได้) ---
                   ClipRRect(
                     borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(4),
                     ),
-                    child: Image.network(
-                      "https://s359.kapook.com/pagebuilder/e9389651-319a-4b69-a69c-2f3ad413b6cc.jpg",
-                      width: double.infinity, // ให้เต็ม card
-                      height: 200,
-
-                      // กำหนดความสูงที่เหมาะสม
-                      fit: BoxFit.cover,
-                    ),
                   ),
+
+                  // --- เนื้อหาใน Card ---
                   Padding(
                     padding: const EdgeInsets.all(12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // --- ข้อความรายละเอียดลอตเตอรี่ ---
-                        Text(
-                          "123456                                                             80 บาท",
-                        ),
-                        Text(
-                          "ลอตเตอรี่                                                             1 ใบ",
-                        ),
-                        Text(
-                          "ราคา                                                                  80 บาท",
-                        ),
-                        Text(
-                          "ยอดรวมทั้งหมด                                                 80 บาท",
-                        ),
-                        const SizedBox(height: 12),
-                        // --- ปุ่มลบ + ซื้อ ---
+                        // --- แถว เลขสลาก + เวลา ---
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.delete, color: Colors.red),
+                          children: const [
+                            Text(
+                              "#123456",
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
+                            Text(
+                              "22/08/2025, 02:37 PM",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 6),
+
+                        // --- ราคา ---
+                        const Text(
+                          "80 บาท",
+                          style: TextStyle(
+                            fontSize: 24,
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+
+                        const SizedBox(height: 0),
+
+                        // --- ปุ่มตรวจหวย ---
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
                             ElevatedButton(
                               onPressed: () {},
                               style: ElevatedButton.styleFrom(
@@ -104,7 +110,7 @@ class _CartpageState extends State<Cartpage> {
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
-                              child: const Text("ซื้อลอตเตอรี่"),
+                              child: const Text("ตรวจหวย"),
                             ),
                           ],
                         ),
@@ -112,15 +118,6 @@ class _CartpageState extends State<Cartpage> {
                     ),
                   ),
                 ],
-              ),
-            ),
-
-            // --- ปุ่มเลือกซื้อเพิ่ม ---
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: OutlinedButton(
-                onPressed: () {},
-                child: const Text("เลือกซื้อลอตเตอรี่ต่อ"),
               ),
             ),
           ],
@@ -151,36 +148,6 @@ class _CartpageState extends State<Cartpage> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const Cartpage()),
-    );
-  }
-}
-
-// ---------- Widget ย่อย: StepItem ----------
-class StepItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool active;
-
-  const StepItem({
-    super.key,
-    required this.icon,
-    required this.label,
-    this.active = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Icon(icon, color: active ? Colors.white : Colors.white70),
-        Text(
-          label,
-          style: TextStyle(
-            color: active ? Colors.white : Colors.white70,
-            fontWeight: active ? FontWeight.bold : FontWeight.normal,
-          ),
-        ),
-      ],
     );
   }
 }

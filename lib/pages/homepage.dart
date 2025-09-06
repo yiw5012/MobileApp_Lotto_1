@@ -42,11 +42,11 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "หน้าแรก"),
           BottomNavigationBarItem(
             icon: Icon(Icons.class_sharp),
-            label: "คำสั่งซื้อ",
+            label: "ผลรางวัล",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
-            label: "ตะกร้า",
+            label: "ลอตเตอรี่ ",
           ),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "สมาชิก"),
         ],
