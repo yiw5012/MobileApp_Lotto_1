@@ -99,7 +99,7 @@ class _HomeContentState extends State<HomeContent> {
                   padding: const EdgeInsets.all(20.0),
                   child: Container(
                     width: 280,
-                    height: 180,
+                    height: 200,
                     color: Colors.white,
                     child: Column(
                       children: [
