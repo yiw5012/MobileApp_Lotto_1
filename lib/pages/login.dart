@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:lotto_1/model/response/user_login_post_res.dart';
+import 'package:lotto_1/pages/adminpage.dart';
+import 'package:lotto_1/pages/cart.dart';
 import 'package:lotto_1/pages/homepage.dart';
 import 'package:lotto_1/pages/register.dart';
 import "package:http/http.dart" as http;
@@ -158,11 +160,23 @@ class _LoginPegesState extends State<LoginPeges> {
 
             developer.log(userlogin.username);
             developer.log(userlogin.email);
+
             if (userlogin.loginMach != null && userlogin.loginMach) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
-              );
+              if (userlogin.roleId == 1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Adminpage()),
+                );
+              } else if (userlogin.roleId == 2) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage()),
+                );
+              }
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => const HomePage()),
+              // );
             }
           } else {
             developer.log('password not valid');
