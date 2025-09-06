@@ -24,7 +24,7 @@ class _AdminpageState extends State<Adminpage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_selectedIndex], // แสดงหน้าที่เลือกอยู่
-
+      appBar: AppBar(title: const Text("กลับสู่หน้าหลัก"), centerTitle: false),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed, // ให้แสดง label ครบทุกอัน
         currentIndex: _selectedIndex, // index ปัจจุบัน
