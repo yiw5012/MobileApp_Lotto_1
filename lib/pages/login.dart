@@ -144,7 +144,9 @@ class _LoginPegesState extends State<LoginPeges> {
     var data = {'user_name': username, 'password': password};
     http
         .post(
-          Uri.parse('https://my-backend-37003238647.asia-southeast1.run.app/login'),
+          Uri.parse(
+            'https://my-backend-37003238647.asia-southeast1.run.app/login',
+          ),
           headers: {"Content-Type": "application/json; charset=utf-8"},
           body: jsonEncode(data),
         )
@@ -153,6 +155,7 @@ class _LoginPegesState extends State<LoginPeges> {
             developer.log(value.body);
             UserLoginPostRes userlogin = userLoginPostResFromJson(value.body);
             // developer.log(value.body);
+
             developer.log(userlogin.username);
             developer.log(userlogin.email);
             if (userlogin.loginMach != null && userlogin.loginMach) {
@@ -161,9 +164,9 @@ class _LoginPegesState extends State<LoginPeges> {
                 MaterialPageRoute(builder: (context) => const HomePage()),
               );
             }
-          }else{
-              developer.log('password not valid');
-            }
+          } else {
+            developer.log('password not valid');
+          }
         })
         .catchError((error) {
           developer.log(error);
