@@ -83,7 +83,7 @@ class _AdminContentState extends State<AdminContent> {
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16),
             ),
-            SizedBox(height: 300, width: 200, child: Colors.redAccent),
+            SizedBox(height: 300, width: 200),
           ],
         ),
       ),
