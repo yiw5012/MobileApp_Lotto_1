@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lotto_1/pages/Member.dart';
+import 'package:lotto_1/pages/adminProfile.dart';
 import 'package:lotto_1/pages/cart.dart';
 import 'package:lotto_1/pages/homepage.dart';
 import 'package:lotto_1/pages/sell.dart';
@@ -16,7 +17,7 @@ class _AdminpageState extends State<Adminpage> {
   final List<Widget> _pages = [
     const AdminContent(), // หน้าแรก
     const Sell(),
-    const Member(),
+    const Adminprofile(),
   ];
 
   @override
