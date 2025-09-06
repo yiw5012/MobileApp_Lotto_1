@@ -26,6 +26,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.redAccent,
       body: _pages[_selectedIndex], // แสดงหน้าที่เลือกอยู่
 
       bottomNavigationBar: BottomNavigationBar(
@@ -69,106 +70,106 @@ class _HomeContentState extends State<HomeContent> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Container(
-        color: Colors.redAccent,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const SizedBox(height: 40),
-              const Text(
-                'ลอตเตอรี่',
-                style: TextStyle(
-                  fontSize: 40,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(height: 40),
+            const Text(
+              'ลอตเตอรี่',
+              style: TextStyle(
+                fontSize: 40,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
               ),
-              const Text(
-                'งวดวันที่ 16 สิงหาคม 2568',
-                style: TextStyle(
-                  fontSize: 15,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+            ),
+            const Text(
+              'งวดวันที่ 16 สิงหาคม 2568',
+              style: TextStyle(
+                fontSize: 15,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
               ),
+            ),
 
-              // ✅ แสดงเลขที่สุ่มได้
-              Card(
+            // ✅ แสดงเลขที่สุ่มได้
+            SingleChildScrollView(
+              child: Card(
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Container(
-                    width: 280,
-                    height: 180,
-                    color: Colors.white,
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children:
-                              (lottoNumber.isEmpty ? "000000" : lottoNumber)
-                                  .split('')
-                                  .map(
-                                    (digit) => Padding(
-                                      padding: const EdgeInsets.all(5.0),
-                                      child: Container(
-                                        width: 35,
-                                        height: 35,
-                                        decoration: BoxDecoration(
-                                          color: Colors.blue,
-                                          borderRadius: BorderRadius.circular(
-                                            6,
+                    // width: 280,
+                    // height: 180,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children:
+                                (lottoNumber.isEmpty ? "000000" : lottoNumber)
+                                    .split('')
+                                    .map(
+                                      (digit) => Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: Container(
+                                          width: 35,
+                                          height: 35,
+                                          decoration: BoxDecoration(
+                                            color: Colors.blue,
+                                            borderRadius: BorderRadius.circular(
+                                              6,
+                                            ),
                                           ),
-                                        ),
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          digit,
-                                          style: const TextStyle(
-                                            fontSize: 18,
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            digit,
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  )
-                                  .toList(),
-                        ),
-                        const SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ElevatedButton(
-                              onPressed: randLotto,
-                              child: const Text('สุ่มหวย'),
-                            ),
-                            const SizedBox(width: 10),
-                            ElevatedButton(
-                              onPressed: findLotto,
-                              child: const Text('ค้นหาเลข'),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const Sell(),
+                                    )
+                                    .toList(),
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ElevatedButton(
+                                onPressed: randLotto,
+                                child: const Text('สุ่มหวย'),
                               ),
-                            );
-                          },
-                          child: const Text('ตรวจสลากของคุณ'),
-                        ),
-                      ],
+                              const SizedBox(width: 10),
+                              ElevatedButton(
+                                onPressed: findLotto,
+                                child: const Text('ค้นหาเลข'),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const Sell(),
+                                ),
+                              );
+                            },
+                            child: const Text('ตรวจสลากของคุณ'),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
