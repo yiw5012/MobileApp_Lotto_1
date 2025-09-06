@@ -14,132 +14,91 @@ class _SellState extends State<Sell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.redAccent,
-      appBar: AppBar(title: Text("sell")),
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(top: 9),
-            child: Text(
-              "คำสั่งซื้อของฉัน",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(8, 2, 8, 8),
-              child: Container(
-                width: double.infinity,
-                child: Card(
-                  color: Colors.white,
-                  child: DefaultTabController(
-                    length: 4,
-                    child: Column(
-                      children: [
-                        const TabBar(
-                          tabs: [
-                            Tab(text: "ยังไม่ชำระ"),
-                            Tab(text: 'รอตรวจสอบ'),
-                            Tab(text: 'ไม่สำเร็จ'),
-                            Tab(text: 'สำเร็จ'),
-                          ],
-                        ),
-                        Expanded(
-                          child: TabBarView(
-                            children: [
-                              ListView(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Card(
-                                      child: Container(
-                                        child: Text(
-                                          "ยังไม่มีรายการชำระ",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              ListView(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Card(
-                                      child: Container(
-                                        child: Text(
-                                          "ยังไม่มีรายการตรวจสอบ",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              ListView(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Card(
-                                      child: Container(
-                                        child: Text(
-                                          "ยังไม่มีรายการไม่สำเร็จ",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              ListView(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Card(
-                                      child: Container(
-                                        child: Text(
-                                          "ยังไม่มีรายการสำเร็จ",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Expanded(
-                        //   child: TabBarView(
-                        //     children: const [
-                        //       Center(child: Text("รายการยังไม่ชำระ")),
-                        //       Center(child: Text("รายการรอตรวจสอบ")),
-                        //       Center(child: Text("รายการไม่สำเร็จ")),
-                        //       Center(child: Text("รายการสำเร็จ")),
-                        //     ],
-                        //   ),
-                        // ),
-                      ],
+      // ---------- AppBar ----------
+      appBar: AppBar(title: const Text("กลับสู่หน้าหลัก"), centerTitle: false),
+
+      // ---------- Body ----------
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // --- Header ---
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.pinkAccent, Colors.red],
+                ),
+              ),
+              child: const Column(
+                children: [
+                  Text(
+                    "รางวัลลอตเตอรี่",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
                     ),
+                    textAlign: TextAlign.center,
                   ),
+                  SizedBox(height: 6),
+                  Text(
+                    "งวดวันที่ 16 สิงหาคม",
+                    style: TextStyle(color: Colors.white70, fontSize: 18),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            // --- Card รางวัลที่ 1 ---
+            Card(
+              margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: const [
+                    // --- ชื่อรางวัล ---
+                    Text(
+                      "รางวัลที่ 1",
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    SizedBox(height: 6),
+
+                    // --- เงินรางวัล ---
+                    Text(
+                      "เงินรางวัล 5,000,000 บาท",
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    SizedBox(height: 12),
+
+                    // --- เลขที่ถูกรางวัล ---
+                    Center(
+                      child: Text(
+                        "123456",
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 91, 253, 3),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
