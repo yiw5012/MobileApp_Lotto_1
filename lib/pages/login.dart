@@ -183,7 +183,10 @@ class _LoginPegesState extends State<LoginPeges> {
           }
         })
         .catchError((error) {
-          developer.log(error);
+          developer.log("HTTP Error: ${error.toString()}");
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("เกิดข้อผิดพลาด: ${error.toString()}")),
+          );
         });
   }
   // Future<void> login() async {
