@@ -159,7 +159,7 @@ class _LoginPegesState extends State<LoginPeges> {
             developer.log(userlogin.username);
             developer.log(userlogin.email);
 
-            if (userlogin.loginMach != null && userlogin.loginMach) {
+            if (userlogin.loginMatch != null && userlogin.loginMatch) {
               if (userlogin.roleId == 1) {
                 Navigator.push(
                   context,
