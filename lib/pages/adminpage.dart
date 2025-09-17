@@ -1,9 +1,15 @@
+import 'dart:math';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lotto_1/config/config.dart';
+import 'package:lotto_1/model/request/Lotto_insert_post_res.dart';
 import 'package:lotto_1/pages/Member.dart';
 import 'package:lotto_1/pages/adminProfile.dart';
 import 'package:lotto_1/pages/cart.dart';
 import 'package:lotto_1/pages/homepage.dart';
 import 'package:lotto_1/pages/sell.dart';
+import 'dart:developer' as developer;
+import 'package:http/http.dart' as http;
 
 class Adminpage extends StatefulWidget {
   final int uid;
@@ -11,7 +17,14 @@ class Adminpage extends StatefulWidget {
   final String? email;
   final String? tel;
   final int? roleId;
-  const Adminpage({super.key, required this.uid, this.username, this.email, this.tel, this.roleId});
+  const Adminpage({
+    super.key,
+    required this.uid,
+    this.username,
+    this.email,
+    this.tel,
+    this.roleId,
+  });
 
   @override
   State<Adminpage> createState() => _AdminpageState();
@@ -19,18 +32,24 @@ class Adminpage extends StatefulWidget {
 
 class _AdminpageState extends State<Adminpage> {
   int _selectedIndex = 0; // เก็บ index ของ nav bar
-  late List<Widget> _pages; 
+  late List<Widget> _pages;
+  List<DateTime?> _selectedDates = [];
 
   @override
   void initState() {
     super.initState();
-  _pages = [
-    const AdminContent(), // หน้าแรก
-    const Sell(),
-    Adminprofile(uid: widget.uid,name: widget.username,email: widget.email,tel: widget.tel,roleId: widget.roleId),
-  ];    
+    _pages = [
+      AdminContent(uid: widget.uid), // หน้าแรก
+      const Sell(),
+      Adminprofile(
+        uid: widget.uid,
+        name: widget.username,
+        email: widget.email,
+        tel: widget.tel,
+        roleId: widget.roleId,
+      ),
+    ];
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -61,12 +80,29 @@ class _AdminpageState extends State<Adminpage> {
 }
 
 class AdminContent extends StatefulWidget {
-  const AdminContent({super.key});
+  final int uid;
+  const AdminContent({super.key, required this.uid});
   @override
   State<AdminContent> createState() => _AdminContentState();
 }
 
 class _AdminContentState extends State<AdminContent> {
+  var url = '';
+  var date_start = TextEditingController();
+  var lottonumber = '';
+  var date_end = TextEditingController();
+  var lotto_price = TextEditingController();
+  var copy = TextEditingController();
+  final random = Random();
+
+  @override
+  void initState() {
+    super.initState();
+    Configuration.getConfig().then((config) {
+      url = config['apiEndpoint'];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -120,9 +156,7 @@ class _AdminContentState extends State<AdminContent> {
 
                       // สีพื้นหลังปุ่ม
                     ),
-                    onPressed: () {
-                      // TODO: เพิ่มโค้ดตอนกดปุ่มสุ่ม
-                    },
+                    onPressed: (Random_lotto_number),
                     icon: const Icon(
                       Icons.star,
                       size: 24.0,
@@ -194,5 +228,191 @@ class _AdminContentState extends State<AdminContent> {
         ),
       ),
     );
+  }
+
+  void Random_lotto_number() {
+    developer.log("Hello world");
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: const EdgeInsets.only(top: 130),
+          child: SingleChildScrollView(
+            child: AlertDialog(
+              title: const Text("สุ่มเลขที่จะเพิ่มใน Lotto"),
+              content: const Text("ใส่ข้อมูลต่างๆ"),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: TextField(
+                    controller: date_start,
+                    decoration: InputDecoration(
+                      labelText: "ประจำงวดวันที่ (YYYY-MM-DD)",
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: TextField(
+                    controller: date_end,
+                    decoration: InputDecoration(
+                      labelText: "สิ้นสุดวันที่ (YYYY-MM-DD)",
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: TextField(
+                    controller: copy,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(labelText: "ทั้งหมดกี่ฉบับ"),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: TextField(
+                    controller: lotto_price,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(labelText: "ราคาต่อฉบับ"),
+                  ),
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        CheckForSure(0);
+                      },
+                      child: Text("Random_reward"),
+                    ),
+                    FilledButton(
+                      onPressed: () {
+                        CheckForSure(1);
+                      },
+                      child: Text("add_lotto"),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void CheckForSure(path) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("คูณแน่ใจหรือยังที่จะทำรายการต่อไปนี้"),
+          content: Text("ยืนยันการทำรายการ"),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("ยกเลิก"),
+                ),
+                FilledButton(
+                  onPressed: () {
+                    if (path == 0) {
+                      Random_reward();
+                    } else {
+                      Insert_lotto();
+                    }
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("ยืนยัน"),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void Random_reward() {
+    developer.log("Random_reward");
+  }
+
+  void Insert_lotto() {
+    developer.log("Insert_lotto");
+    developer.log(copy.text);
+    developer.log(lotto_price.text);
+    var startdate = date_start.text;
+    var enddate = date_end.text;
+    var admin_uid = widget.uid;
+
+    int? numberOfCopies = int.tryParse(copy.text);
+    int? pricelotto = int.tryParse(lotto_price.text);
+
+    if (numberOfCopies != null &&
+        pricelotto != null &&
+        startdate.isNotEmpty &&
+        enddate.isNotEmpty &&
+        pricelotto != null) {
+      developer.log('$url');
+      List<String> lotto_num_list = Random_number(numberOfCopies);
+      lotto_to_database(
+        admin_uid,
+        lotto_num_list,
+        startdate,
+        enddate,
+        pricelotto,
+      );
+      // developer.log('Generated Lotto Numbers: $lotto_num_list');
+    } else {
+      // Handle the case where the input is not a valid number
+      developer.log('Invalid number of copies entered.');
+      // You might want to show a SnackBar or an alert dialog to the user here.
+    }
+  }
+
+  Future<void> lotto_to_database(
+    int uid, List<String> lotto_list, String DateStart, String DateEnd, int lottoprice) async {
+  for (int index = 0; index < lotto_list.length; index++) {
+    LottoInsertPostreq req = LottoInsertPostreq(
+      uid: uid,
+      lottoNumber: lotto_list[index],
+      dateStart: DateStart,
+      dateEnd: DateEnd,
+      price: lottoprice,
+      saleStatus: 1,
+      lottoResultStatus: 1,
+    );
+
+    var res = await http.post(
+      Uri.parse('https://node-project-ho8q.onrender.com/lotto/add_lotto'),
+      headers: {"Content-Type": "application/json; charset=utf-8"},
+      body: lottoInsertPostreqToJson(req),
+    );
+
+    developer.log("Inserted ${lotto_list[index]} → ${res.body}");
+  }
+}
+
+  List<String> Random_number(int number) {
+    List<String> lotto_num_list = [];
+    String lotto_num = '';
+    for (int i = 0; i < number; i = i + 1) {
+      for (int j = 0; j < 6; j = j + 1) {
+        var num = random.nextInt(10);
+        lotto_num += num.toString();
+      }
+      lotto_num_list.add(lotto_num);
+      lotto_num = '';
+    }
+    developer.log('lotto_num_list as String: $lotto_num_list');
+    return lotto_num_list;
   }
 }
