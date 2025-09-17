@@ -165,13 +165,21 @@ class _LoginPegesState extends State<LoginPeges> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>  
-                                Adminpage(uid: userlogin.uid, username: userlogin.username, email: userlogin.email, tel: userlogin.tel, roleId: userlogin.roleId, )),
+                    builder: (context) => Adminpage(
+                      uid: userlogin.uid,
+                      username: userlogin.username,
+                      email: userlogin.email,
+                      tel: userlogin.tel,
+                      roleId: userlogin.roleId,
+                    ),
+                  ),
                 );
               } else if (userlogin.roleId == 2) {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(uid: userlogin.uid),
+                  ),
                 );
               }
               // Navigator.push(
