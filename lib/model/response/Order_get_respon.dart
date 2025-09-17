@@ -18,11 +18,17 @@ class OrderGetResponse {
   int uid;
   String date;
   String paymentStatus;
+  String userName;
+  String email;
+  String password;
+  String tel;
+  int money;
+  int roleId;
   int lottoNumber;
   String dateStart;
   String dateEnd;
   int price;
-  int seleStatus;
+  int saleStatus;
   int lottoResultStatus;
 
   OrderGetResponse({
@@ -31,11 +37,17 @@ class OrderGetResponse {
     required this.uid,
     required this.date,
     required this.paymentStatus,
+    required this.userName,
+    required this.email,
+    required this.password,
+    required this.tel,
+    required this.money,
+    required this.roleId,
     required this.lottoNumber,
     required this.dateStart,
     required this.dateEnd,
     required this.price,
-    required this.seleStatus,
+    required this.saleStatus,
     required this.lottoResultStatus,
   });
 
@@ -46,11 +58,17 @@ class OrderGetResponse {
         uid: json["uid"],
         date: json["date"],
         paymentStatus: json["payment_status"],
+        userName: json["user_name"],
+        email: json["email"],
+        password: json["password"],
+        tel: json["tel"],
+        money: json["money"],
+        roleId: json["role_id"],
         lottoNumber: json["lotto_number"],
         dateStart: json["date_start"],
         dateEnd: json["date_end"],
         price: json["price"],
-        seleStatus: json["sele_status"],
+        saleStatus: json["sale_status"],
         lottoResultStatus: json["lotto_result_status"],
       );
 
@@ -60,11 +78,17 @@ class OrderGetResponse {
     "uid": uid,
     "date": date,
     "payment_status": paymentStatus,
+    "user_name": userName,
+    "email": email,
+    "password": password,
+    "tel": tel,
+    "money": money,
+    "role_id": roleId,
     "lotto_number": lottoNumber,
     "date_start": dateStart,
     "date_end": dateEnd,
     "price": price,
-    "sele_status": seleStatus,
+    "sale_status": saleStatus,
     "lotto_result_status": lottoResultStatus,
   };
 }
