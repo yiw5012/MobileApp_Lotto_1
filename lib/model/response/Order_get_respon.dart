@@ -1,20 +1,23 @@
 // To parse this JSON data, do
 //
-//     final lottoListGetRes = lottoListGetResFromJson(jsonString);
+//     final orderGetResponse = orderGetResponseFromMap(jsonString);
 
 import 'dart:convert';
 
-List<LottoListGetRes> lottoListGetResFromJson(String str) =>
-    List<LottoListGetRes>.from(
-      json.decode(str).map((x) => LottoListGetRes.fromJson(x)),
+List<OrderGetResponse> orderGetResponseFromMap(String str) =>
+    List<OrderGetResponse>.from(
+      json.decode(str).map((x) => OrderGetResponse.fromMap(x)),
     );
 
-String lottoListGetResToJson(List<LottoListGetRes> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String orderGetResponseToMap(List<OrderGetResponse> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toMap())));
 
-class LottoListGetRes {
+class OrderGetResponse {
+  int oid;
   int lid;
   int uid;
+  String date;
+  String paymentStatus;
   int lottoNumber;
   String dateStart;
   String dateEnd;
@@ -22,9 +25,12 @@ class LottoListGetRes {
   int seleStatus;
   int lottoResultStatus;
 
-  LottoListGetRes({
+  OrderGetResponse({
+    required this.oid,
     required this.lid,
     required this.uid,
+    required this.date,
+    required this.paymentStatus,
     required this.lottoNumber,
     required this.dateStart,
     required this.dateEnd,
@@ -33,10 +39,13 @@ class LottoListGetRes {
     required this.lottoResultStatus,
   });
 
-  factory LottoListGetRes.fromJson(Map<String, dynamic> json) =>
-      LottoListGetRes(
+  factory OrderGetResponse.fromMap(Map<String, dynamic> json) =>
+      OrderGetResponse(
+        oid: json["oid"],
         lid: json["lid"],
         uid: json["uid"],
+        date: json["date"],
+        paymentStatus: json["payment_status"],
         lottoNumber: json["lotto_number"],
         dateStart: json["date_start"],
         dateEnd: json["date_end"],
@@ -45,9 +54,12 @@ class LottoListGetRes {
         lottoResultStatus: json["lotto_result_status"],
       );
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
+    "oid": oid,
     "lid": lid,
     "uid": uid,
+    "date": date,
+    "payment_status": paymentStatus,
     "lotto_number": lottoNumber,
     "date_start": dateStart,
     "date_end": dateEnd,
