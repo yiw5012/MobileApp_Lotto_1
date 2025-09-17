@@ -6,7 +6,12 @@ import 'package:lotto_1/pages/homepage.dart';
 import 'package:lotto_1/pages/sell.dart';
 
 class Adminpage extends StatefulWidget {
-  const Adminpage({super.key});
+  final int uid;
+  final String? username;
+  final String? email;
+  final String? tel;
+  final int? roleId;
+  const Adminpage({super.key, required this.uid, this.username, this.email, this.tel, this.roleId});
 
   @override
   State<Adminpage> createState() => _AdminpageState();
@@ -14,11 +19,18 @@ class Adminpage extends StatefulWidget {
 
 class _AdminpageState extends State<Adminpage> {
   int _selectedIndex = 0; // เก็บ index ของ nav bar
-  final List<Widget> _pages = [
+  late List<Widget> _pages; 
+
+  @override
+  void initState() {
+    super.initState();
+  _pages = [
     const AdminContent(), // หน้าแรก
     const Sell(),
-    const Adminprofile(),
-  ];
+    Adminprofile(uid: widget.uid,name: widget.username,email: widget.email,tel: widget.tel,roleId: widget.roleId),
+  ];    
+  }
+
 
   @override
   Widget build(BuildContext context) {
