@@ -5,7 +5,9 @@ import 'package:lotto_1/pages/cart.dart';
 import 'package:lotto_1/pages/sell.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final int uid;
+
+  const HomePage({super.key, required this.uid});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -14,14 +16,19 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String lottoNumber = ""; // ค่าเริ่มต้น
   int _selectedIndex = 0; // เก็บ index ของ nav bar
+  late List<Widget> _pages;
 
   // ✅ รายการหน้า
-  final List<Widget> _pages = [
-    const HomeContent(), // หน้าแรก
-    const Sell(),
-    const Cartpage(),
-    Member(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _pages = [
+      const HomeContent(), // หน้าแรก
+      const Sell(),
+      Cartpage(uid: widget.uid),
+      Member(),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
