@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   rename: ^3.1.0
   http: ^1.5.0
+  calendar_date_picker2: ^2.0.1
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
@@ -63,6 +64,7 @@ flutter_launcher_icons:
 flutter:
   assets:
     - assets/config/config.json
+    # - assets/config/
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
