@@ -1,13 +1,32 @@
 import 'package:flutter/material.dart';
 
 class Adminprofile extends StatefulWidget {
-  const Adminprofile({super.key});
+  int uid = 0;
+  String? name;
+  String? email;
+  String? tel;
+  int? roleId;
+
+  Adminprofile({super.key, required this.uid, this.name, this.email, this.tel, this.roleId});
 
   @override
   State<Adminprofile> createState() => _AdminprofileState();
 }
 
 class _AdminprofileState extends State<Adminprofile> {
+  String username = '';
+  String email = '';
+  String tel = '';
+  int roleId = 0;
+  String is_admin = '';
+  int adminroleid = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    getuserinfo();
+    
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,17 +62,17 @@ class _AdminprofileState extends State<Adminprofile> {
                   ), // คอลัมน์ label กว้างตามเนื้อหา
                   1: FlexColumnWidth(), // คอลัมน์ value ขยายเต็ม
                 },
-                children: const [
+                children: [
                   TableRow(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         child: Text(
                           "ชื่อ",
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
 
-                      Text("Lotto"),
+                      Text(username),
                     ],
                   ),
                   TableRow(
@@ -62,7 +81,7 @@ class _AdminprofileState extends State<Adminprofile> {
                         "อีเมล์",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      Text("Lotto@l.com"),
+                      Text(email),
                     ],
                   ),
                   TableRow(
@@ -71,10 +90,10 @@ class _AdminprofileState extends State<Adminprofile> {
                         "เบอร์โทร",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      Text("09xxxxxxxx"),
+                      Text(tel),
                     ],
                   ),
-                  TableRow(
+                  const TableRow(
                     children: [
                       Text(
                         "สถานะ",
@@ -122,4 +141,19 @@ class _AdminprofileState extends State<Adminprofile> {
       ),
     );
   }
+
+void getuserinfo() {
+  setState(() {
+    // If widget.name is null, use an empty string '' as the default.
+    username = widget.name ?? '';
+    email = widget.email ?? '';
+    tel = widget.tel ?? '';
+    adminroleid = widget.roleId ?? 0; // Use 0 or another default value for int
+    if (adminroleid == 1) {
+      is_admin = 'ผู้ดูแลระบบ';
+    } else {
+      is_admin = 'ผู้ใช้ทั่วไป';
+    }
+  });
+}
 }

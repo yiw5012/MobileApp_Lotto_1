@@ -158,12 +158,15 @@ class _LoginPegesState extends State<LoginPeges> {
 
             developer.log(userlogin.username);
             developer.log(userlogin.email);
+            // developer.log(userlogin.)
 
             if (userlogin.loginMatch != null && userlogin.loginMatch) {
               if (userlogin.roleId == 1) {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Adminpage()),
+                  MaterialPageRoute(
+                    builder: (context) =>  
+                                Adminpage(uid: userlogin.uid, username: userlogin.username, email: userlogin.email, tel: userlogin.tel, roleId: userlogin.roleId, )),
                 );
               } else if (userlogin.roleId == 2) {
                 Navigator.push(
