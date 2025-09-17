@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lotto_1/apptheme/appthem.dart';
+import 'package:lotto_1/pages/homepage.dart';
 import 'package:lotto_1/pages/login.dart';
 
 void main() {
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       title: 'Lotto',
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      home: LoginPeges(),
+      home: HomePage(),
     );
   }
 }
