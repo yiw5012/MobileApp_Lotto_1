@@ -1,4 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:lotto_1/config/config.dart';
+import 'package:lotto_1/model/response/Lotto_get_respon.dart';
 import 'package:lotto_1/pages/Member.dart';
 import 'package:lotto_1/pages/homepage.dart';
 import 'package:lotto_1/pages/sell.dart';
@@ -11,6 +16,15 @@ class Cartpage extends StatefulWidget {
 }
 
 class _CartpageState extends State<Cartpage> {
+  String url = '';
+  late Future<void> loadData;
+  List<LottoGetRespon> lottoGetRespon = [];
+  @override
+  void initState() {
+    super.initState();
+    loadData = loadDataAsync();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,28 +140,11 @@ class _CartpageState extends State<Cartpage> {
     );
   }
 
-  void home() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const HomePage()),
-    );
-  }
+  Future<void> loadDataAsync() async {
+    var config = await Configuration.getConfig();
+    url = config['apiEndpoint'];
 
-  void member() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => Member()));
-  }
-
-  void sell() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const Sell()),
-    );
-  }
-
-  void cart() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const Cartpage()),
-    );
+    var res = await http.get(Uri.parse('$url/lotto'));
+    log(res.body);
   }
 }

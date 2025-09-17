@@ -146,9 +146,7 @@ class _LoginPegesState extends State<LoginPeges> {
     var data = {'user_name': username, 'password': password};
     http
         .post(
-          Uri.parse(
-            'https://my-backend-37003238647.asia-southeast1.run.app/login',
-          ),
+          Uri.parse('$url/login'),
           headers: {"Content-Type": "application/json; charset=utf-8"},
           body: jsonEncode(data),
         )
@@ -161,7 +159,7 @@ class _LoginPegesState extends State<LoginPeges> {
             developer.log(userlogin.username);
             developer.log(userlogin.email);
 
-            if (userlogin.loginMach != null && userlogin.loginMach) {
+            if (userlogin.loginMatch != null && userlogin.loginMatch) {
               if (userlogin.roleId == 1) {
                 Navigator.push(
                   context,
