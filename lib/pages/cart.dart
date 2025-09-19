@@ -182,7 +182,7 @@ class _PayMentOrderState extends State<PayMentOrder> {
   Future<void> check_lotto(int uid, int lotto, int lid) async {
     var config = await Configuration.getConfig();
     var url = config['apiEndpoint'];
-
+    log(url);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -193,14 +193,20 @@ class _PayMentOrderState extends State<PayMentOrder> {
               final res = await http.post(
                 Uri.parse('$url/order/check_lotto'),
                 headers: {"Content-Type": "application/json"},
-                body: jsonEncode({"uid": uid, "lotto": lotto, "lid": lid}),
+                body: jsonEncode({
+                  "uid": uid,
+                  "lotto_number": lotto,
+                  "lid": lid,
+                }),
               );
-
+              log(res.statusCode.toString());
+              log(res.body);
               if (res.statusCode == 200) {
                 log(res.body);
+                final message = res.body;
                 ScaffoldMessenger.of(
                   context,
-                ).showSnackBar(SnackBar(content: Text('คูณถูกหวย!!')));
+                ).showSnackBar(SnackBar(content: Text(message)));
 
                 // โหลดข้อมูลใหม่
                 setState(() {
