@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lotto_1/apptheme/appthem.dart';
+import 'package:lotto_1/pages/homepage.dart';
 import 'package:lotto_1/pages/login.dart';
 
 void main() {
@@ -11,6 +13,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(title: 'Lotto', home: LoginPeges());
+    return MaterialApp(
+      title: 'Lotto',
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      home: HomePage(),
+    );
   }
 }
