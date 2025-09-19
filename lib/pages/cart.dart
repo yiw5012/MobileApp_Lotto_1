@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:lotto_1/config/config.dart';
-import 'package:lotto_1/model/response/Lotto_get_respon.dart';
 import 'package:lotto_1/model/response/Order_get_respon.dart';
 
 class Cartpage extends StatefulWidget {
