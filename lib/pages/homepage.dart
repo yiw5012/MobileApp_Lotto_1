@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
       const HomeContent(), // หน้าแรก
       const Sell(),
       Cartpage(uid: widget.uid),
-      Member(),
+      Member(uid: widget.uid),
     ];
   }
 
@@ -254,7 +254,9 @@ class _HomeContentState extends State<HomeContent> {
                                                   MainAxisAlignment.end,
                                               children: [
                                                 ElevatedButton(
-                                                  onPressed: () {},
+                                                  onPressed: saleLotto(
+                                                    lottoNumber,
+                                                  ),
                                                   style: ElevatedButton.styleFrom(
                                                     backgroundColor: Colors
                                                         .red, // สีพื้นหลังปุ่ม
@@ -332,6 +334,10 @@ class _HomeContentState extends State<HomeContent> {
     } catch (e) {
       dev.log(e.toString(), name: "sss");
     }
+  }
+
+  saleLotto(String lotto) {
+    dev.log(lotto);
   }
 }
 
