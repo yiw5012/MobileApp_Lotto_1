@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
       const HomeContent(), // หน้าแรก
       const Sell(),
       Cartpage(uid: widget.uid),
-      Member(),
+      Member(uid: widget.uid),
     ];
   }
 
