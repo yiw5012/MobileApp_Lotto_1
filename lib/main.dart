@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       title: 'Lotto',
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      home: HomePage(),
+      home: LoginPeges(),
     );
   }
 }

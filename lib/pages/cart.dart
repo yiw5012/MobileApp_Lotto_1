@@ -136,6 +136,11 @@ class _PayMentOrderState extends State<PayMentOrder> {
                               children: [
                                 ElevatedButton(
                                   onPressed: () {
+                                    check_lotto(
+                                      widget.uid,
+                                      order.lottoNumber,
+                                      order.lid,
+                                    );
                                     // ตรวจหวย
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -172,6 +177,52 @@ class _PayMentOrderState extends State<PayMentOrder> {
     setState(() {
       orderGetRespon = orderGetResponseFromMap(res.body);
     });
+  }
+
+  Future<void> check_lotto(int uid, int lotto, int lid) async {
+    var config = await Configuration.getConfig();
+    var url = config['apiEndpoint'];
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("ตรวจหวย"),
+        actions: [
+          ElevatedButton(
+            onPressed: () async {
+              final res = await http.post(
+                Uri.parse('$url/order/check_lotto'),
+                headers: {"Content-Type": "application/json"},
+                body: jsonEncode({"uid": uid, "lotto": lotto, "lid": lid}),
+              );
+
+              if (res.statusCode == 200) {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text('คูณถูกหวย!!')));
+
+                // โหลดข้อมูลใหม่
+                setState(() {
+                  loadData = loadDataAsync();
+                });
+                Navigator.of(context).pop(); // ✅ ปิด Dialog ก่อนส่งคำขอ
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('ไม่ถูกจร้าาาา!!: ${res.body}')),
+                );
+              }
+            },
+            child: Text("ยืนยัน"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // ❌ ยกเลิก => ปิด Dialog
+            },
+            child: Text("ยกเลิก"),
+          ),
+        ],
+      ),
+    );
   }
 }
 
