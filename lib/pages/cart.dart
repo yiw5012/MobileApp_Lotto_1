@@ -197,6 +197,7 @@ class _PayMentOrderState extends State<PayMentOrder> {
               );
 
               if (res.statusCode == 200) {
+                log(res.body);
                 ScaffoldMessenger.of(
                   context,
                 ).showSnackBar(SnackBar(content: Text('คูณถูกหวย!!')));
