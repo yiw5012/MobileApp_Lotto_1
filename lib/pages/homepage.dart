@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer' as dev;
 import 'dart:math';
 
@@ -31,7 +32,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _pages = [
-      const HomeContent(), // หน้าแรก
+      HomeContent(user: widget.uid), // หน้าแรก
       const Sell(),
       Cartpage(uid: widget.uid),
       Member(uid: widget.uid),
@@ -73,7 +74,8 @@ class _HomePageState extends State<HomePage> {
 
 /// ✅ แยก UI ของหน้าแรกออกมา (เพื่อความเป็นระเบียบ)
 class HomeContent extends StatefulWidget {
-  const HomeContent({super.key});
+  int user = 0;
+  HomeContent({super.key, required this.user});
 
   @override
   State<HomeContent> createState() => _HomeContentState();
@@ -254,8 +256,9 @@ class _HomeContentState extends State<HomeContent> {
                                                   MainAxisAlignment.end,
                                               children: [
                                                 ElevatedButton(
-                                                  onPressed: saleLotto(
-                                                    lottoNumber,
+                                                  onPressed: () => saleLotto(
+                                                    lotto.lid,
+                                                    widget.user,
                                                   ),
                                                   style: ElevatedButton.styleFrom(
                                                     backgroundColor: Colors
@@ -336,8 +339,34 @@ class _HomeContentState extends State<HomeContent> {
     }
   }
 
-  saleLotto(String lotto) {
-    dev.log(lotto);
+  saleLotto(int lotto, int uid) async {
+    log(lotto);
+    int lid = lotto;
+    var res = await http.get(
+      Uri.parse('https://node-project-ho8q.onrender.com/lotto/${lid}'),
+    );
+    dev.log(res.body);
+    Get.defaultDialog(
+      title: "แจ้งเตือน!!",
+      middleText: "คุณต้องการซื้อลอตเตอรี่มั้ย",
+      textConfirm: "ยืนยัน",
+      onConfirm: () async {
+        var res = await http.post(
+          Uri.parse('https://node-project-ho8q.onrender.com/orders'),
+
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode({"lid": lid, "uid": uid}),
+        );
+
+        dev.log(res.body);
+      },
+      buttonColor: Colors.redAccent,
+      cancelTextColor: Colors.black,
+      textCancel: "ยกเลิก",
+      onCancel: () {
+        Get.back();
+      },
+    );
   }
 }
 
