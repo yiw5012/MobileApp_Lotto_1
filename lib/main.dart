@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:lotto_1/apptheme/appthem.dart';
 import 'package:lotto_1/pages/homepage.dart';
 import 'package:lotto_1/pages/login.dart';
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Lotto',
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,

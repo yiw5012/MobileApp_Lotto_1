@@ -352,13 +352,21 @@ class _HomeContentState extends State<HomeContent> {
       textConfirm: "ยืนยัน",
       onConfirm: () async {
         var res = await http.post(
-          Uri.parse('https://node-project-ho8q.onrender.com/orders'),
+          Uri.parse('https://node-project-ho8q.onrender.com/order/orders'),
 
           headers: {"Content-Type": "application/json"},
           body: jsonEncode({"lid": lid, "uid": uid}),
         );
 
         dev.log(res.body);
+        if (res.statusCode == 200) {
+          Get.defaultDialog(
+            title: "คุณซื้อลอตเตอรี่สำเร็จ!!",
+            middleText: "ไปหน้าชำระเงินเลยมั้ยยย",
+            onConfirm: () => Get.to(Cartpage(uid: uid)),
+            onCancel: () {},
+          );
+        }
       },
       buttonColor: Colors.redAccent,
       cancelTextColor: Colors.black,
