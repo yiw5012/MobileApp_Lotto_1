@@ -350,6 +350,7 @@ class _HomeContentState extends State<HomeContent> {
       title: "แจ้งเตือน!!",
       middleText: "คุณต้องการซื้อลอตเตอรี่มั้ย",
       textConfirm: "ยืนยัน",
+
       onConfirm: () async {
         var res = await http.post(
           Uri.parse('https://node-project-ho8q.onrender.com/order/orders'),
@@ -359,21 +360,22 @@ class _HomeContentState extends State<HomeContent> {
         );
 
         dev.log(res.body);
-        if (res.statusCode == 200) {
+        if (res.statusCode == 201) {
           Get.defaultDialog(
             title: "คุณซื้อลอตเตอรี่สำเร็จ!!",
             middleText: "ไปหน้าชำระเงินเลยมั้ยยย",
             onConfirm: () => Get.to(Cartpage(uid: uid)),
+
             onCancel: () {},
+            buttonColor: Colors.redAccent,
+            cancelTextColor: Colors.black,
           );
         }
       },
       buttonColor: Colors.redAccent,
       cancelTextColor: Colors.black,
       textCancel: "ยกเลิก",
-      onCancel: () {
-        Get.back();
-      },
+      onCancel: () {},
     );
   }
 }
