@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:lotto_1/config/config.dart';
 import 'package:lotto_1/model/response/lottolist_get_res.dart';
