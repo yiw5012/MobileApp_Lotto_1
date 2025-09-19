@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:lotto_1/config/config.dart';
 import 'package:lotto_1/model/request/Lotto_insert_post_res.dart';
 import 'package:lotto_1/model/request/wininglotto_add_post_req.dart';
-import 'package:lotto_1/model/response/Lotto_get_respon.dart';
+import 'package:lotto_1/model/response/lottolist_get_res.dart';
 import 'package:lotto_1/pages/Member.dart';
 import 'package:lotto_1/pages/adminProfile.dart';
 import 'package:lotto_1/pages/cart.dart';
@@ -51,7 +51,6 @@ class _AdminpageState extends State<Adminpage> {
         roleId: widget.roleId,
       ),
     ];
-
   }
 
   @override
@@ -102,7 +101,6 @@ class _AdminContentState extends State<AdminContent> {
   // var uid_lotto = List<int>;
   // List<String> = random_lotto = [];
   // Lis
-  
 
   @override
   void initState() {
@@ -390,80 +388,84 @@ class _AdminContentState extends State<AdminContent> {
   }
 
   Future<void> lotto_to_database(
-    int uid, List<String> lotto_list, String DateStart, String DateEnd, int lottoprice) async {
-  for (int index = 0; index < lotto_list.length; index++) {
-    LottoInsertPostreq req = LottoInsertPostreq(
-      uid: uid,
-      lottoNumber: lotto_list[index],
-      dateStart: DateStart,
-      dateEnd: DateEnd,
-      price: lottoprice,
-      saleStatus: 1,
-      lottoResultStatus: 1,
-    );
+    int uid,
+    List<String> lotto_list,
+    String DateStart,
+    String DateEnd,
+    int lottoprice,
+  ) async {
+    for (int index = 0; index < lotto_list.length; index++) {
+      LottoInsertPostreq req = LottoInsertPostreq(
+        uid: uid,
+        lottoNumber: lotto_list[index],
+        dateStart: DateStart,
+        dateEnd: DateEnd,
+        price: lottoprice,
+        saleStatus: 1,
+        lottoResultStatus: 1,
+      );
 
-    var res = await http.post(
-      Uri.parse('https://node-project-ho8q.onrender.com/lotto/add_lotto'),
-      headers: {"Content-Type": "application/json; charset=utf-8"},
-      body: lottoInsertPostreqToJson(req),
-    );
-
-    developer.log("Inserted ${lotto_list[index]} → ${res.body}");
-  }
-}
-
- Future<void> getlotto() async {
-  var res = await http.get(
-    Uri.parse("https://node-project-ho8q.onrender.com/lotto")
-  );
-  // developer.log(res.body);
-  List<LottoListGetRes> lottoList = lottoListGetResFromJson(res.body);
-  // developer.log(lotto_list.lottoNumber);
-  // for (int i = 0; i < lottoList.length; i++) {
-  //     developer.log("Lotto number: ${lottoList[i].lottoNumber}");
-  //     developer.log("Price: ${lottoList[i].price}");
-  // developer.log(lottoList.length.toString());
-  //   }
-  int len = 0;
-  List<int> price = [6000000, 200000, 80000, 4000, 2000];
-  List<int> wining_list = [];
-  for (var lotto in lottoList) {
-    // developer.log(lotto.lottoNumber.bitLength.toString());
-    // if (lotto.lottoNumber.toString().length == 6) {
-    // developer.log('${lotto.lottoNumber}, ${lotto.price}, ${lotto.lid}');
-    // }
-    len++;
-  } 
-  // developer.log(len.toString());
-  
-  for (int i = 0; i < 5; i++) {
-    wining_list.add(random.nextInt(len));
-  }
-  int pri = 0;
-  for (var win in wining_list) {
-    developer.log(lottoList[win].lid.toString());
-    // developer.log('wining: ${win.toString()}');
-    developer.log(lottoList[win].lottoNumber.toString());
-    developer.log(lottoList[win].dateEnd.toString());
-    developer.log(price[pri].toString());
-    pri++;
-    developer.log('------------------------------');
-    WiningLottoAddPostReq req = WiningLottoAddPostReq(
-      lid: lottoList[win].lid,
-      winningLottoNumber: lottoList[win].lottoNumber.toString(),
-      rank: pri + 1,
-      date: lottoList[win].dateEnd,
-      prize: price[pri]
-    );
       var res = await http.post(
-          Uri.parse('$url/lotto/add_winning_lotto'),
-          headers: {"Content-Type": "application/json; charset=utf-8"},
-          body: winingLottoAddPostReqToJson(req),
+        Uri.parse('https://node-project-ho8q.onrender.com/lotto/add_lotto'),
+        headers: {"Content-Type": "application/json; charset=utf-8"},
+        body: lottoInsertPostreqToJson(req),
+      );
+
+      developer.log("Inserted ${lotto_list[index]} → ${res.body}");
+    }
+  }
+
+  Future<void> getlotto() async {
+    var res = await http.get(
+      Uri.parse("https://node-project-ho8q.onrender.com/lotto"),
+    );
+    // developer.log(res.body);
+    List<LottoListGetRes> lottoList = lottoListGetResFromJson(res.body);
+    // developer.log(lotto_list.lottoNumber);
+    // for (int i = 0; i < lottoList.length; i++) {
+    //     developer.log("Lotto number: ${lottoList[i].lottoNumber}");
+    //     developer.log("Price: ${lottoList[i].price}");
+    // developer.log(lottoList.length.toString());
+    //   }
+    int len = 0;
+    List<int> price = [6000000, 200000, 80000, 4000, 2000];
+    List<int> wining_list = [];
+    for (var lotto in lottoList) {
+      // developer.log(lotto.lottoNumber.bitLength.toString());
+      // if (lotto.lottoNumber.toString().length == 6) {
+      // developer.log('${lotto.lottoNumber}, ${lotto.price}, ${lotto.lid}');
+      // }
+      len++;
+    }
+    // developer.log(len.toString());
+
+    for (int i = 0; i < 5; i++) {
+      wining_list.add(random.nextInt(len));
+    }
+    int pri = 0;
+    for (var win in wining_list) {
+      developer.log(lottoList[win].lid.toString());
+      // developer.log('wining: ${win.toString()}');
+      developer.log(lottoList[win].lottoNumber.toString());
+      developer.log(lottoList[win].dateEnd.toString());
+      developer.log(price[pri].toString());
+      pri++;
+      developer.log('------------------------------');
+      WiningLottoAddPostReq req = WiningLottoAddPostReq(
+        lid: lottoList[win].lid,
+        winningLottoNumber: lottoList[win].lottoNumber.toString(),
+        rank: pri + 1,
+        date: lottoList[win].dateEnd,
+        prize: price[pri],
+      );
+      var res = await http.post(
+        Uri.parse('$url/lotto/add_winning_lotto'),
+        headers: {"Content-Type": "application/json; charset=utf-8"},
+        body: winingLottoAddPostReqToJson(req),
       );
       developer.log(res.body);
+    }
   }
- }
-
 
   List<String> Random_number(int number) {
     List<String> lotto_num_list = [];
