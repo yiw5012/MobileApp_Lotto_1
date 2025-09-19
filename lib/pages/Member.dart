@@ -487,10 +487,10 @@ class _MemberState extends State<Member> {
   }
 
   void To_homepage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => HomePage()),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => HomePage()),
+    // );
   }
 
   void top_up(BuildContext context) {
