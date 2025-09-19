@@ -1,28 +1,66 @@
-import 'dart:developer';
-
+import 'dart:convert';
+import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
-import 'package:lotto_1/pages/homepage.dart';
+import 'package:http/http.dart' as http;
+import 'package:lotto_1/config/config.dart';
 
 class Member extends StatefulWidget {
-  const Member({super.key});
+  final int uid; // uid จาก login
+  const Member({super.key, required this.uid});
 
   @override
   State<Member> createState() => _MemberState();
 }
 
 class _MemberState extends State<Member> {
-  String credit_left = "200";
-  String username = " YEW";
-  String userId = "111213";
-  var creditctl = TextEditingController();
-  var userctl = TextEditingController();
-  var fullnamectl = TextEditingController();
-  var Emailctl = TextEditingController();
-  var house_numberctl = TextEditingController();
-  var districtctl = TextEditingController();
-  var district_bigctl = TextEditingController();
-  var cityctl = TextEditingController();
-  var postal_codectl = TextEditingController();
+  String username = '';
+  int userID = 0;
+  String email = '';
+  int money = 0;
+  String tel = '';
+  String url = '';
+  Future<void>? loadUser; // nullable Future
+
+  TextEditingController creditController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    loadUser = fetchUser();
+  }
+
+  Future<void> fetchUser() async {
+    try {
+      var config = await Configuration.getConfig();
+      url = config['apiEndpoint'];
+
+      final res = await http.get(Uri.parse('$url/user/${widget.uid}'));
+
+      if (res.statusCode == 200) {
+        final data = jsonDecode(res.body);
+        if (data is List && data.isNotEmpty) {
+          setState(() {
+            username = data[0]['user_name'] ?? '';
+            userID = data[0]['uid'] != null
+                ? int.tryParse(data[0]['uid'].toString()) ?? 0
+                : 0;
+            email = data[0]['email'] ?? '';
+            money = data[0]['money'] != null
+                ? int.tryParse(data[0]['money'].toString()) ?? 0
+                : 0;
+
+            tel = data[0]['tel'] ?? '';
+          });
+        } else {
+          dev.log('User not found');
+        }
+      } else {
+        dev.log('Failed to load user: ${res.statusCode}');
+      }
+    } catch (e) {
+      dev.log('Error fetching user: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +116,7 @@ class _MemberState extends State<Member> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              Text('รหัสสมาชิก : $userId'),
+                              Text('รหัสสมาชิก : $userID'),
                             ],
                           ),
                         ),
@@ -112,48 +150,13 @@ class _MemberState extends State<Member> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'กระเป๋าตังของฉัน\n$credit_left บาท',
-                              style: const TextStyle(fontSize: 16),
+                              'คงเหลือ: $money บาท',
+                              style: const TextStyle(fontSize: 18),
                             ),
+
                             // Top-up button.
                             ElevatedButton(
-                              onPressed: () {
-                                // Add your logic for the top-up button here.
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text("เติมเงิน"),
-                                      content: const Text(
-                                        "ใส่จำนวนเงินที่ต้องการเติม",
-                                      ),
-                                      actions: [
-                                        TextField(
-                                          controller: creditctl,
-                                          keyboardType: TextInputType.number,
-                                          decoration: InputDecoration(
-                                            border: OutlineInputBorder(
-                                              borderSide: BorderSide(width: 1),
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 8,
-                                          ),
-                                          child: TextButton(
-                                            child: const Text("OK"),
-                                            onPressed: () {
-                                              top_up(context);
-                                              creditctl.clear();
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
+                              onPressed: showTopUpDialog,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color.fromARGB(
                                   255,
@@ -177,6 +180,7 @@ class _MemberState extends State<Member> {
                           ],
                         ),
                         const SizedBox(height: 16),
+
                         const Text(
                           'ข้อมูลสมาชิก',
                           style: TextStyle(
@@ -187,7 +191,10 @@ class _MemberState extends State<Member> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text("ข้อมูลของคุณ"),
+                            Text(
+                              'ชื่อ: $username\nEmail: $email\n$tel',
+                              style: const TextStyle(fontSize: 16),
+                            ),
                             // Edit button.
                             Align(
                               alignment: Alignment.centerRight,
@@ -217,30 +224,7 @@ class _MemberState extends State<Member> {
                                             ],
                                           ),
                                           TextField(
-                                            controller: userctl,
-                                            decoration: InputDecoration(
-                                              border: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  width: 1,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          const Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                  top: 8,
-                                                  bottom: 8,
-                                                ),
-                                                child: Text("ชื่อสกุล"),
-                                              ),
-                                            ],
-                                          ),
-                                          TextField(
-                                            controller: fullnamectl,
+                                            // controller: userctl,
                                             decoration: InputDecoration(
                                               border: OutlineInputBorder(
                                                 borderSide: BorderSide(
@@ -263,7 +247,30 @@ class _MemberState extends State<Member> {
                                             ],
                                           ),
                                           TextField(
-                                            controller: Emailctl,
+                                            // controller: fullnamectl,
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  width: 1,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                  top: 8,
+                                                  bottom: 8,
+                                                ),
+                                                child: Text("เบอร์โทรศัพท์"),
+                                              ),
+                                            ],
+                                          ),
+                                          TextField(
+                                            // controller: Emailctl,
                                             decoration: InputDecoration(
                                               border: OutlineInputBorder(
                                                 borderSide: BorderSide(
@@ -280,10 +287,10 @@ class _MemberState extends State<Member> {
                                             child: TextButton(
                                               child: const Text("OK"),
                                               onPressed: () {
-                                                edit_user_info(context);
-                                                userctl.clear();
-                                                fullnamectl.clear();
-                                                Emailctl.clear();
+                                                // edit_user_info(context);
+                                                // userctl.clear();
+                                                // fullnamectl.clear();
+                                                // Emailctl.clear();
                                               },
                                             ),
                                           ),
@@ -316,165 +323,13 @@ class _MemberState extends State<Member> {
                           ],
                         ),
                         const SizedBox(height: 6),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text("ที่อยู่ของคุณ"),
-                            // Edit button.
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  // Add your logic for the top-up button here.
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text("แก้ไขที่อยู่ของคุณ"),
-                                        content: SingleChildScrollView(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              const Padding(
-                                                padding: EdgeInsets.only(
-                                                  top: 8,
-                                                  bottom: 8,
-                                                ),
-                                                child: Text("บ้านเลขที่"),
-                                              ),
-                                              TextField(
-                                                controller: house_numberctl,
-                                                decoration:
-                                                    const InputDecoration(
-                                                      border:
-                                                          OutlineInputBorder(),
-                                                    ),
-                                              ),
-                                              const Padding(
-                                                padding: EdgeInsets.only(
-                                                  top: 8,
-                                                  bottom: 8,
-                                                ),
-                                                child: Text("ตำบล"),
-                                              ),
-                                              TextField(
-                                                controller: districtctl,
-                                                decoration:
-                                                    const InputDecoration(
-                                                      border:
-                                                          OutlineInputBorder(),
-                                                    ),
-                                              ),
-                                              const Padding(
-                                                padding: EdgeInsets.only(
-                                                  top: 8,
-                                                  bottom: 8,
-                                                ),
-                                                child: Text("อำเภอ"),
-                                              ),
-                                              TextField(
-                                                controller: district_bigctl,
-                                                decoration:
-                                                    const InputDecoration(
-                                                      border:
-                                                          OutlineInputBorder(),
-                                                    ),
-                                              ),
-                                              const Padding(
-                                                padding: EdgeInsets.only(
-                                                  top: 8,
-                                                  bottom: 8,
-                                                ),
-                                                child: Text("จังหวัด"),
-                                              ),
-                                              TextField(
-                                                controller: cityctl,
-                                                decoration:
-                                                    const InputDecoration(
-                                                      border:
-                                                          OutlineInputBorder(),
-                                                    ),
-                                              ),
-                                              const Padding(
-                                                padding: EdgeInsets.only(
-                                                  top: 8,
-                                                  bottom: 8,
-                                                ),
-                                                child: Text("รหัสไปรษณีย์"),
-                                              ),
-                                              TextField(
-                                                controller: postal_codectl,
-                                                decoration:
-                                                    const InputDecoration(
-                                                      border:
-                                                          OutlineInputBorder(),
-                                                    ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            child: const Text("OK"),
-                                            onPressed: () {
-                                              edit_user_address(context);
-                                              house_numberctl.clear();
-                                              districtctl.clear();
-                                              district_bigctl.clear();
-                                              cityctl.clear();
-                                              postal_codectl.clear();
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color.fromARGB(
-                                    255,
-                                    246,
-                                    96,
-                                    88,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                    vertical: 10,
-                                  ),
-                                ),
-                                child: const Text(
-                                  'แก้ไข',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                        //
                       ],
                     ),
                   ),
                 ),
 
                 const SizedBox(height: 16),
-
-                // Contact staff button.
-                Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: ListTile(
-                    title: const Text('ติดต่อเจ้าหน้าที่'),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {
-                      // Add your logic for contacting staff here.
-                    },
-                  ),
-                ),
                 const SizedBox(height: 200),
               ],
             ),
@@ -486,49 +341,77 @@ class _MemberState extends State<Member> {
     );
   }
 
-  void To_homepage() {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => HomePage()),
-    // );
+  // ฟังก์ชันแสดง Dialog เติมเงิน
+  void showTopUpDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("เติมเงิน"),
+          content: TextField(
+            controller: creditController,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: "จำนวนเงินที่ต้องการเติม",
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: const Text("ยกเลิก"),
+              onPressed: () {
+                creditController.clear();
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text("ตกลง"),
+              onPressed: () async {
+                int amount = int.tryParse(creditController.text) ?? 0;
+                if (amount > 0) {
+                  await topUp(amount); // เรียกฟังก์ชันเติมเงิน
+                  Navigator.of(context).pop();
+                  creditController.clear();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("กรุณากรอกจำนวนเงินที่ถูกต้อง"),
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
-  void top_up(BuildContext context) {
-    int? topup = int.tryParse(creditctl.text);
-    if (topup != null && topup > 0) {
-      setState(() {
-        int currentCredit = int.parse(credit_left);
-        currentCredit += topup;
-        credit_left = currentCredit.toString();
-      });
+  // ฟังก์ชันเติมเงิน
+  Future<void> topUp(int amount) async {
+    try {
+      final res = await http.post(
+        Uri.parse('$url/user/topup/${widget.uid}'), // ต้องตรงกับ API ของคุณ
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'amount': amount}),
+      );
+
+      if (res.statusCode == 200) {
+        setState(() {
+          money += amount; // อัปเดตยอดเงินใน UI
+        });
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("เติมเงินสำเร็จ $amount บาท")));
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("เติมเงินไม่สำเร็จ")));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("เกิดข้อผิดพลาด: $e")));
     }
-    Navigator.of(context).pop();
-  }
-
-  void edit_user_info(BuildContext context) {
-    var testname = userctl.text;
-    var testfullname = fullnamectl.text;
-    var testemail = Emailctl.text;
-    log(testname);
-    log(testfullname);
-    log(testemail);
-    setState(() {});
-    Navigator.of(context).pop();
-  }
-
-  void edit_user_address(BuildContext context) {
-    var testhouse = house_numberctl.text;
-    var test_small_d = districtctl.text;
-    var test_big_d = district_bigctl.text;
-    var test_city = cityctl.text;
-    var testaddress = postal_codectl.text;
-    log(testhouse);
-    log(test_small_d);
-    log(test_big_d);
-    log(test_city);
-    log(testaddress);
-    setState(() {});
-
-    Navigator.of(context).pop();
   }
 }
