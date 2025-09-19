@@ -19,7 +19,7 @@ class LottoListGetRes {
   String dateStart;
   String dateEnd;
   int price;
-  int seleStatus;
+  int saleStatus;
   int lottoResultStatus;
 
   LottoListGetRes({
@@ -29,7 +29,7 @@ class LottoListGetRes {
     required this.dateStart,
     required this.dateEnd,
     required this.price,
-    required this.seleStatus,
+    required this.saleStatus,
     required this.lottoResultStatus,
   });
 
@@ -41,7 +41,7 @@ class LottoListGetRes {
         dateStart: json["date_start"],
         dateEnd: json["date_end"],
         price: json["price"],
-        seleStatus: json["sele_status"],
+        saleStatus: json["sale_status"],
         lottoResultStatus: json["lotto_result_status"],
       );
 
@@ -52,7 +52,7 @@ class LottoListGetRes {
     "date_start": dateStart,
     "date_end": dateEnd,
     "price": price,
-    "sele_status": seleStatus,
+    "sale_status": saleStatus,
     "lotto_result_status": lottoResultStatus,
   };
 }
