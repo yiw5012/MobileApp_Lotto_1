@@ -23,6 +23,10 @@ class _MemberState extends State<Member> {
 
   TextEditingController creditController = TextEditingController();
 
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController telController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -199,106 +203,7 @@ class _MemberState extends State<Member> {
                             Align(
                               alignment: Alignment.centerRight,
                               child: ElevatedButton(
-                                onPressed: () {
-                                  // Add your logic for the top-up button here.
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text("แก้ใขข้อมูลของคุณ"),
-                                        content: const Text(
-                                          "กรอกข้อมูลลงในช่องที่ต้องการแก้ใข",
-                                        ),
-                                        actions: [
-                                          const Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                  top: 8,
-                                                  bottom: 8,
-                                                ),
-                                                child: Text("ชื่อ"),
-                                              ),
-                                            ],
-                                          ),
-                                          TextField(
-                                            // controller: userctl,
-                                            decoration: InputDecoration(
-                                              border: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  width: 1,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          const Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                  top: 8,
-                                                  bottom: 8,
-                                                ),
-                                                child: Text("Email"),
-                                              ),
-                                            ],
-                                          ),
-                                          TextField(
-                                            // controller: fullnamectl,
-                                            decoration: InputDecoration(
-                                              border: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  width: 1,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          const Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                  top: 8,
-                                                  bottom: 8,
-                                                ),
-                                                child: Text("เบอร์โทรศัพท์"),
-                                              ),
-                                            ],
-                                          ),
-                                          TextField(
-                                            // controller: Emailctl,
-                                            decoration: InputDecoration(
-                                              border: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  width: 1,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                              top: 8,
-                                            ),
-                                            child: TextButton(
-                                              child: const Text("OK"),
-                                              onPressed: () {
-                                                // edit_user_info(context);
-                                                // userctl.clear();
-                                                // fullnamectl.clear();
-                                                // Emailctl.clear();
-                                              },
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                },
+                                onPressed: showEditUserDialog,
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color.fromARGB(
                                     255,
@@ -407,6 +312,100 @@ class _MemberState extends State<Member> {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text("เติมเงินไม่สำเร็จ")));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("เกิดข้อผิดพลาด: $e")));
+    }
+  }
+
+  // Dialog แก้ไขข้อมูลสมาชิก
+  void showEditUserDialog() {
+    nameController.text = username;
+    emailController.text = email;
+    telController.text = tel;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("แก้ไขข้อมูลสมาชิก"),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextField(
+                  controller: nameController,
+                  decoration: const InputDecoration(
+                    labelText: "ชื่อ",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: emailController,
+                  decoration: const InputDecoration(
+                    labelText: "Email",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: telController,
+                  decoration: const InputDecoration(
+                    labelText: "เบอร์โทร",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: const Text("ยกเลิก"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text("บันทึก"),
+              onPressed: () async {
+                await updateUserInfo();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // ฟังก์ชันอัปเดตข้อมูลสมาชิก
+  Future<void> updateUserInfo() async {
+    try {
+      final res = await http.post(
+        Uri.parse('$url/user/update/${widget.uid}'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'username': nameController.text,
+          'email': emailController.text,
+          'tel': telController.text,
+        }),
+      );
+
+      if (res.statusCode == 200) {
+        setState(() {
+          username = nameController.text;
+          email = emailController.text;
+          tel = telController.text;
+        });
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("อัปเดตข้อมูลสำเร็จ")));
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("อัปเดตข้อมูลไม่สำเร็จ")));
       }
     } catch (e) {
       ScaffoldMessenger.of(
