@@ -1,9 +1,14 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:math' as dev;
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:http/http.dart' as http;
 import 'package:lotto_1/config/config.dart';
 import 'package:lotto_1/model/response/Order_get_respon.dart';
+import 'package:lotto_1/model/response/checkLotto_res.dart';
+import 'package:lotto_1/pages/homepage.dart';
 
 class Cartpage extends StatefulWidget {
   final int uid;
@@ -66,7 +71,6 @@ class _PayMentOrderState extends State<PayMentOrder> {
   late Future<void> loadData;
   String url = '';
   List<OrderGetResponse> orderGetRespon = [];
-
   @override
   void initState() {
     super.initState();
@@ -135,12 +139,32 @@ class _PayMentOrderState extends State<PayMentOrder> {
                               children: [
                                 ElevatedButton(
                                   onPressed: () {
-                                    check_lotto(
-                                      widget.uid,
-                                      order.lottoNumber,
-                                      order.lid,
+                                    Get.defaultDialog(
+                                      title: 'ตรวจหวย',
+                                      content: const Text(
+                                        "คุรต้องการตรวจหวยมั้ย",
+                                      ),
+                                      barrierDismissible: true,
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Get.back();
+                                          },
+                                          child: Text("ปิด"),
+                                        ),
+                                        FilledButton(
+                                          onPressed: () {
+                                            check_lotto(
+                                              widget.uid,
+                                              order.lottoNumber,
+                                              order.lid,
+                                              order.oid,
+                                            );
+                                          },
+                                          child: Text("ตรวจจ้ะ"),
+                                        ),
+                                      ],
                                     );
-                                    // ตรวจหวย
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.red,
@@ -178,57 +202,104 @@ class _PayMentOrderState extends State<PayMentOrder> {
     });
   }
 
-  Future<void> check_lotto(int uid, int lotto, int lid) async {
+  Future<void> check_lotto(int uid, int lotto, int lid, int oid) async {
     var config = await Configuration.getConfig();
     var url = config['apiEndpoint'];
-    log(url);
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("ตรวจหวย"),
-        actions: [
-          ElevatedButton(
-            onPressed: () async {
-              final res = await http.post(
-                Uri.parse('$url/order/check_lotto'),
-                headers: {"Content-Type": "application/json"},
-                body: jsonEncode({
-                  "uid": uid,
-                  "lotto_number": lotto,
-                  "lid": lid,
-                }),
-              );
-              log(res.statusCode.toString());
-              log(res.body);
-              if (res.statusCode == 200) {
-                log(res.body);
-                final message = res.body;
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(message)));
 
-                // โหลดข้อมูลใหม่
-                setState(() {
-                  loadData = loadDataAsync();
-                });
-                Navigator.of(context).pop(); // ✅ ปิด Dialog ก่อนส่งคำขอ
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('ไม่ถูกจร้าาาา!!: ${res.body}')),
-                );
-              }
-            },
-            child: Text("ยืนยัน"),
-          ),
-          ElevatedButton(
+    final res = await http.post(
+      Uri.parse('$url/order/check_lotto'),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "uid": uid,
+        "lotto_number": lotto,
+        "lid": lid,
+        "oid": oid,
+      }),
+    );
+    log(res.statusCode.toString());
+    log(res.body);
+    final responseJson = jsonDecode(res.body);
+    if (res.statusCode != 200) {
+      Get.defaultDialog(
+        title: 'เกิดข้อผิดพลาด',
+        content: Text("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้"),
+        actions: [
+          TextButton(
             onPressed: () {
-              Navigator.of(context).pop(); // ❌ ยกเลิก => ปิด Dialog
+              Get.back();
             },
-            child: Text("ยกเลิก"),
+            child: Text("ปิด"),
           ),
         ],
-      ),
-    );
+      );
+      return;
+    } else {
+      if (responseJson["message"] == "ถูกรางวัล!") {
+        final data = responseJson["data"];
+        int oid = data["oid"];
+        int prize = data["prize"];
+        Get.defaultDialog(
+          title: 'คุณถูกรางวัล',
+          content: Text("คุณถูกรางวัล  $prize"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Get.back(); // ✅ ปิด dialog ก่อน
+                Get.to(() => Cartpage(uid: uid));
+              },
+              child: Text("ปิด"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                Get.dialog(
+                  Center(child: CircularProgressIndicator()),
+                  barrierDismissible: false,
+                );
+
+                final updateRes = await http.post(
+                  Uri.parse('$url/order/updateMoney'),
+                  headers: {"Content-Type": "application/json"},
+                  body: jsonEncode({"uid": uid, "oid": oid, "prize": prize}),
+                );
+
+                Get.back(); // ปิด loading
+
+                if (updateRes.statusCode == 200) {
+                  Get.snackbar("สำเร็จ", "ขึ้นเงินสำเร็จแล้ว");
+                  Get.off(() => Cartpage(uid: uid));
+                } else {
+                  Get.snackbar("ล้มเหลว", "ไม่สามารถขึ้นเงินได้");
+                }
+              },
+              child: Text("ขึ้นเงิน"),
+            ),
+          ],
+        );
+        log(responseJson["message"]);
+      } else {
+        Get.defaultDialog(
+          title: 'คุณไม่ถูกรางวัล',
+          content: Text("คุณไม่ถูกรางวัล แย่จัง!!"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Get.back(); // ✅ ปิด dialog ก่อน
+                Get.to(() => Cartpage(uid: uid));
+              },
+              child: Text("ปิด"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Get.back(); // ✅ ปิด dialog ก่อน
+                Get.to(() => HomePage(uid: uid));
+              },
+              child: Text("ชื้อหวยอีกก!!"),
+            ),
+          ],
+        );
+        log(responseJson["message"]);
+      }
+    }
   }
 }
 
@@ -313,10 +384,27 @@ class _PayMentPageState extends State<PayMentPage> {
                               children: [
                                 ElevatedButton(
                                   onPressed: () {
-                                    payOrder(
-                                      widget.uid,
-                                      order.oid,
-                                      order.price,
+                                    Get.defaultDialog(
+                                      title: 'ชำระเงิน',
+                                      content: Text("กรุณาชำระเงินด้วย"),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Get.back();
+                                          },
+                                          child: Text("ปิด"),
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            payOrder(
+                                              widget.uid,
+                                              order.oid,
+                                              order.price,
+                                            );
+                                          },
+                                          child: Text("ทำการชำระเงิน"),
+                                        ),
+                                      ],
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -361,45 +449,25 @@ class _PayMentPageState extends State<PayMentPage> {
     var config = await Configuration.getConfig();
     var url = config['apiEndpoint'];
 
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("ชำระเงิน"),
-        actions: [
-          ElevatedButton(
-            onPressed: () async {
-              final res = await http.post(
-                Uri.parse('$url/order/pay'),
-                headers: {"Content-Type": "application/json"},
-                body: jsonEncode({"uid": uid, "oid": oid, "price": price}),
-              );
-
-              if (res.statusCode == 200) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text('ชำระเงินสำเร็จ')));
-
-                // โหลดข้อมูลใหม่
-                setState(() {
-                  loadData = loadDataAsync();
-                });
-                Navigator.of(context).pop(); // ✅ ปิด Dialog ก่อนส่งคำขอ
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('ชำระเงินไม่สำเร็จ: ${res.body}')),
-                );
-              }
-            },
-            child: Text("ยืนยัน"),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // ❌ ยกเลิก => ปิด Dialog
-            },
-            child: Text("ยกเลิก"),
-          ),
-        ],
-      ),
+    final res = await http.post(
+      Uri.parse('$url/order/pay'),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({"uid": uid, "oid": oid, "price": price}),
     );
+    if (res.statusCode == 200) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('ชำระเงินสำเร็จ')));
+
+      // โหลดข้อมูลใหม่
+      setState(() {
+        loadData = loadDataAsync();
+      });
+      Navigator.of(context).pop(); // ✅ ปิด Dialog ก่อนส่งคำขอ
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('ชำระเงินไม่สำเร็จ: ${res.body}')));
+    }
   }
 }
