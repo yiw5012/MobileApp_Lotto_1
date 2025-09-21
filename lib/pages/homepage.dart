@@ -319,9 +319,7 @@ class _HomeContentState extends State<HomeContent> {
       if (lotto == lottoListGetRes[i]) {
         dev.log(lottoListGetRes[i].toString());
         lottonum = lottoListGetRes[i].toString();
-        setState(() {
-          lottoNumber = lottonum; // อัปเดตให้ Text ข้างบนเปลี่ยน
-        });
+        
       }
     }
   }
