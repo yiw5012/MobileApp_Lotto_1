@@ -291,7 +291,7 @@ class _PayMentOrderState extends State<PayMentOrder> {
     } else {
       if (responseJson["message"] == "ถูกรางวัล!") {
         final data = responseJson["data"];
-        int oid = data["oid"];
+        int oid = data["old"];
         int prize = data["prize"];
         Get.defaultDialog(
           title: 'คุณถูกรางวัล',
