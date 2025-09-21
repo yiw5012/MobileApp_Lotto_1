@@ -86,7 +86,7 @@ class _HomeContentState extends State<HomeContent> {
   late Future<void> loaddata;
   String lottoNumber = "";
   late List<LottoListGetRes> lottoListGetRes = [];
-
+  LottoListGetRes? foundlotto;
   TextEditingController l6 = TextEditingController();
   // final ConfigController config = Get.put(ConfigController()); //ดึงค่า
   @override
@@ -202,87 +202,115 @@ class _HomeContentState extends State<HomeContent> {
                             child: const Text('ตรวจสลากของคุณ'),
                           ),
                           Column(
-                            children: lottoListGetRes
-                                .map(
-                                  (lotto) => Card(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Container(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                            children: [
+                              if (foundlotto != null) ...[
+                                const SizedBox(height: 20),
+                                Text(
+                                  "ผลการค้นหา",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                Card(
+                                  child: ListTile(
+                                    title: Text(
+                                      foundlotto!.lottoNumber.toString(),
+                                      style: const TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      "ราคา: ${foundlotto!.price} บาท\nวันที่: ${foundlotto!.dateStart}",
+                                    ),
+                                    trailing: ElevatedButton(
+                                      onPressed: () => saleLotto(
+                                        foundlotto!.lid,
+                                        widget.user,
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.redAccent,
+                                        foregroundColor: Colors.white,
+                                      ),
+                                      child: const Text("ซื้อ"),
+                                    ),
+                                  ),
+                                ),
+                              ],
 
+                              // แสดงลอตเตอรี่ทั้งหมด
+                              ...lottoListGetRes.map(
+                                (lotto) => Card(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        // --- แถว เลขสลาก + เวลา ---
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
-                                            // --- แถว เลขสลาก + เวลา ---
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  lotto.lottoNumber.toString(),
-                                                  style: TextStyle(
-                                                    fontSize: 24,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  lotto.dateStart,
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.grey,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-
-                                            const SizedBox(height: 6),
-
-                                            // --- ราคา ---
                                             Text(
-                                              lotto.price.toString(),
-                                              style: TextStyle(
+                                              lotto.lottoNumber.toString(),
+                                              style: const TextStyle(
                                                 fontSize: 24,
-                                                color: Colors.black87,
-                                                fontWeight: FontWeight.w500,
+                                                fontWeight: FontWeight.bold,
                                               ),
                                             ),
-
-                                            const SizedBox(height: 0),
-
-                                            // --- ปุ่มตรวจหวย ---
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: [
-                                                ElevatedButton(
-                                                  onPressed: () => saleLotto(
-                                                    lotto.lid,
-                                                    widget.user,
-                                                  ),
-                                                  style: ElevatedButton.styleFrom(
-                                                    backgroundColor: Colors
-                                                        .red, // สีพื้นหลังปุ่ม
-                                                    foregroundColor: Colors
-                                                        .white, // สีตัวหนังสือ
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            8,
-                                                          ),
-                                                    ),
-                                                  ),
-                                                  child: const Text("ซื้อหวย"),
-                                                ),
-                                              ],
+                                            Text(
+                                              lotto.dateStart,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.grey,
+                                              ),
                                             ),
                                           ],
                                         ),
-                                      ),
+
+                                        const SizedBox(height: 6),
+
+                                        // --- ราคา ---
+                                        Text(
+                                          lotto.price.toString(),
+                                          style: const TextStyle(
+                                            fontSize: 24,
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+
+                                        // --- ปุ่มซื้อหวย ---
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            ElevatedButton(
+                                              onPressed: () => saleLotto(
+                                                lotto.lid,
+                                                widget.user,
+                                              ),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.red,
+                                                foregroundColor: Colors.white,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                              ),
+                                              child: const Text("ซื้อหวย"),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                )
-                                .toList(),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -313,13 +341,16 @@ class _HomeContentState extends State<HomeContent> {
   }
 
   findLotto(String lotto) async {
-    String lottonum = '';
-    dev.log(lotto);
+    // dev.log(lotto);
     for (var i = 0; i < lottoListGetRes.length; i++) {
-      if (lotto == lottoListGetRes[i]) {
+      if (lotto == lottoListGetRes[i].lottoNumber.toString()) {
         dev.log(lottoListGetRes[i].toString());
-        lottonum = lottoListGetRes[i].toString();
-        
+        setState(() {
+          foundlotto = lottoListGetRes[i];
+        });
+        return;
+      } else {
+        dev.log("erorr");
       }
     }
   }
