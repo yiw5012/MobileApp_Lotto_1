@@ -8,7 +8,9 @@ import 'package:http/http.dart' as http;
 import 'package:lotto_1/config/config.dart';
 import 'package:lotto_1/model/response/Order_get_respon.dart';
 import 'package:lotto_1/model/response/checkLotto_res.dart';
+import 'package:lotto_1/pages/Member.dart';
 import 'package:lotto_1/pages/homepage.dart';
+import 'package:lotto_1/pages/sell.dart';
 
 class Cartpage extends StatefulWidget {
   final int uid;
@@ -54,6 +56,58 @@ class _CartpageState extends State<Cartpage>
         children: [
           PayMentPage(uid: widget.uid),
           PayMentOrder(uid: widget.uid),
+        ],
+      ),
+    );
+  }
+}
+
+class _CartpageStatebody extends State<Cartpage> {
+  String lottoNumber = ""; // ค่าเริ่มต้น
+  int _selectedIndex = 0; // เก็บ index ของ nav bar
+  late List<Widget> _pages;
+
+  String url = '';
+
+  // ✅ รายการหน้า
+  @override
+  void initState() {
+    super.initState();
+    _pages = [
+      HomeContent(user: widget.uid), // หน้าแรก
+      const Sell(),
+      Cartpage(uid: widget.uid),
+      Member(uid: widget.uid),
+    ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.redAccent,
+      body: _pages[_selectedIndex], // แสดงหน้าที่เลือกอยู่
+
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed, // ให้แสดง label ครบทุกอัน
+        currentIndex: _selectedIndex, // index ปัจจุบัน
+        selectedItemColor: Colors.redAccent, // สีตอนเลือก
+        unselectedItemColor: Colors.grey, // สีตอนยังไม่เลือก
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "หน้าแรก"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.class_sharp),
+            label: "ผลรางวัล",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart),
+            label: "ลอตเตอรี่ ",
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "สมาชิก"),
         ],
       ),
     );
