@@ -313,10 +313,15 @@ class _HomeContentState extends State<HomeContent> {
   }
 
   findLotto(String lotto) async {
+    String lottonum = '';
     dev.log(lotto);
     for (var i = 0; i < lottoListGetRes.length; i++) {
       if (lotto == lottoListGetRes[i]) {
         dev.log(lottoListGetRes[i].toString());
+        lottonum = lottoListGetRes[i].toString();
+        setState(() {
+          lottoNumber = lottonum; // อัปเดตให้ Text ข้างบนเปลี่ยน
+        });
       }
     }
   }
