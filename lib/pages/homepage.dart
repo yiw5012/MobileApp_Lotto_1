@@ -346,6 +346,7 @@ class _HomeContentState extends State<HomeContent> {
       Uri.parse('https://node-project-ho8q.onrender.com/lotto/${lid}'),
     );
     dev.log(res.body);
+    await loaddatLotto();
     Get.defaultDialog(
       title: "แจ้งเตือน!!",
       middleText: "คุณต้องการซื้อลอตเตอรี่มั้ย",
@@ -358,7 +359,6 @@ class _HomeContentState extends State<HomeContent> {
           headers: {"Content-Type": "application/json"},
           body: jsonEncode({"lid": lid, "uid": uid}),
         );
-
         dev.log(res.body);
         if (res.statusCode == 201) {
           Get.defaultDialog(
