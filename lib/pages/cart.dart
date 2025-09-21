@@ -39,6 +39,7 @@ class _CartpageState extends State<Cartpage>
     return Scaffold(
       appBar: AppBar(
         title: const Text('ระบบลอตเตอรี่'),
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.red,
         bottom: TabBar(
           controller: _tabController,
