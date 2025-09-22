@@ -320,7 +320,12 @@ class _PayMentOrderState extends State<PayMentOrder> {
                 Get.back(); // ปิด loading
 
                 if (updateRes.statusCode == 200) {
-                  Get.snackbar("สำเร็จ", "ขึ้นเงินสำเร็จแล้ว");
+                  Get.snackbar(
+                    "สำเร็จ",
+                    "ขึ้นเงินสำเร็จแล้ว",
+                    backgroundColor: Colors.green,
+                    colorText: Colors.white,
+                  );
                   Get.off(() => Cartpage(uid: uid));
                 } else {
                   Get.snackbar("ล้มเหลว", "ไม่สามารถขึ้นเงินได้");
@@ -503,22 +508,28 @@ class _PayMentPageState extends State<PayMentPage> {
   void payOrder(int uid, int oid, int price) async {
     var config = await Configuration.getConfig();
     var url = config['apiEndpoint'];
-
+    Get.dialog(
+      Center(child: CircularProgressIndicator()),
+      barrierDismissible: false,
+    );
     final res = await http.post(
       Uri.parse('$url/order/pay'),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({"uid": uid, "oid": oid, "price": price}),
     );
     if (res.statusCode == 200) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('ชำระเงินสำเร็จ')));
-
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('ชำระเงินสำเร็จ'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      Get.off(() => Cartpage(uid: uid));
       // โหลดข้อมูลใหม่
-      setState(() {
-        loadData = loadDataAsync();
-      });
-      Navigator.of(context).pop(); // ✅ ปิด Dialog ก่อนส่งคำขอ
+      // setState(() {
+      //   loadData = loadDataAsync();
+      // });
+      // Navigator.of(context).pop(); // ✅ ปิด Dialog ก่อนส่งคำขอ
     } else {
       ScaffoldMessenger.of(
         context,
