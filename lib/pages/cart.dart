@@ -14,7 +14,9 @@ import 'package:lotto_1/pages/sell.dart';
 
 class Cartpage extends StatefulWidget {
   final int uid;
-  const Cartpage({super.key, required this.uid});
+  final int initialIndex;
+  const Cartpage({Key? key, required this.uid, this.initialIndex = 0})
+    : super(key: key);
 
   @override
   State<Cartpage> createState() => _CartpageState();
@@ -27,7 +29,15 @@ class _CartpageState extends State<Cartpage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: widget.initialIndex,
+    );
+  }
+
+  void changeTab(int index) {
+    _tabController.animateTo(index);
   }
 
   @override
@@ -62,24 +72,13 @@ class _CartpageState extends State<Cartpage>
   }
 }
 
-class _CartpageStatebody extends State<Cartpage> {
+class _CartpageStatebody extends State<Cartpage>
+    with SingleTickerProviderStateMixin {
   String lottoNumber = ""; // ค่าเริ่มต้น
   int _selectedIndex = 0; // เก็บ index ของ nav bar
   late List<Widget> _pages;
 
   String url = '';
-
-  // ✅ รายการหน้า
-  @override
-  void initState() {
-    super.initState();
-    _pages = [
-      HomeContent(user: widget.uid), // หน้าแรก
-      const Sell(),
-      Cartpage(uid: widget.uid),
-      Member(uid: widget.uid),
-    ];
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -209,6 +208,7 @@ class _PayMentOrderState extends State<PayMentOrder> {
                                         ),
                                         FilledButton(
                                           onPressed: () {
+                                            Get.back();
                                             check_lotto(
                                               widget.uid,
                                               order.lottoNumber,
@@ -278,14 +278,7 @@ class _PayMentOrderState extends State<PayMentOrder> {
       Get.defaultDialog(
         title: 'เกิดข้อผิดพลาด',
         content: Text("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้"),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Get.back();
-            },
-            child: Text("ปิด"),
-          ),
-        ],
+        actions: [TextButton(onPressed: () {}, child: Text("ปิด"))],
       );
       return;
     } else {
@@ -300,7 +293,7 @@ class _PayMentOrderState extends State<PayMentOrder> {
             TextButton(
               onPressed: () {
                 Get.back(); // ✅ ปิด dialog ก่อน
-                Get.to(() => Cartpage(uid: uid));
+                Get.to(() => Member(uid: uid));
               },
               child: Text("ปิด"),
             ),
@@ -344,7 +337,11 @@ class _PayMentOrderState extends State<PayMentOrder> {
             TextButton(
               onPressed: () {
                 Get.back(); // ✅ ปิด dialog ก่อน
-                Get.to(() => Cartpage(uid: uid));
+                Get.to(() {
+                  final cartState = Get.context
+                      ?.findAncestorStateOfType<_CartpageState>();
+                  cartState?.changeTab(1);
+                });
               },
               child: Text("ปิด"),
             ),
@@ -360,6 +357,13 @@ class _PayMentOrderState extends State<PayMentOrder> {
         log(responseJson["message"]);
       }
     }
+  }
+
+  void staypage() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final cartState = context.findAncestorStateOfType<_CartpageState>();
+      cartState?.changeTab(1);
+    });
   }
 }
 
@@ -517,19 +521,24 @@ class _PayMentPageState extends State<PayMentPage> {
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({"uid": uid, "oid": oid, "price": price}),
     );
+    Get.back();
     if (res.statusCode == 200) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('ชำระเงินสำเร็จ'),
-          backgroundColor: Colors.green,
-        ),
+      final snackBar = SnackBar(
+        content: Text('ชำระเงินสำเร็จ'),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
       );
-      Get.off(() => Cartpage(uid: uid));
-      // โหลดข้อมูลใหม่
-      // setState(() {
-      //   loadData = loadDataAsync();
-      // });
-      // Navigator.of(context).pop(); // ✅ ปิด Dialog ก่อนส่งคำขอ
+
+      final controller = ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      controller.closed.then((_) {
+        Get.off(() => Cartpage(uid: uid, initialIndex: 1));
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final cartstate = Get.context
+              ?.findAncestorStateOfType<_CartpageState>();
+          cartstate?.changeTab(0);
+        });
+      });
     } else {
       ScaffoldMessenger.of(
         context,
