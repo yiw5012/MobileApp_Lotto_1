@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:lotto_1/model/response/user_login_post_res.dart';
 import 'package:lotto_1/pages/adminpage.dart';
 import 'package:lotto_1/pages/cart.dart';
@@ -45,8 +46,8 @@ class _LoginPegesState extends State<LoginPeges> {
                 SizedBox(
                   child: ClipOval(
                     // logo
-                    child: Image.network(
-                      "https://scontent.fkkc3-1.fna.fbcdn.net/v/t1.15752-9/527758169_1090055486033709_5459465472049000231_n.png?_nc_cat=109&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeEhM5WZH65oPIxyDyUCQVVVvvaK68x1Yru-9orrzHViuwIZvcm8F_Sf2xRp66po3QZ3-7bZ2h-3Vn3lXzqYgDSB&_nc_ohc=EeA-KhwYMz8Q7kNvwExRfNT&_nc_oc=AdkKQ7R7E4xDnTS5ExFZ2okYmN6VidOxpYsPQSJZBnIj9NE2okwbBCvJK-s1Pt8rm8GuYwHewfx3uYh2i28iorYX&_nc_zt=23&_nc_ht=scontent.fkkc3-1.fna&oh=03_Q7cD3AE5Bj4bPcRyq-XQEIZWYGjSHppwdbIFp7HzUckfes9jeg&oe=68CA3EB3",
+                    child: Image.asset(
+                      "logo.png",
                       width: 250,
                       height: 250,
                       fit: BoxFit.cover,
@@ -87,6 +88,8 @@ class _LoginPegesState extends State<LoginPeges> {
                             child: TextField(
                               // password
                               controller: password_ctl,
+                              obscureText: true,
+
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                                 labelText: 'password',
@@ -188,6 +191,12 @@ class _LoginPegesState extends State<LoginPeges> {
               // );
             }
           } else {
+            Get.snackbar(
+              "รหัสผ่านไม่ถูกต้อง",
+              "กรุณากรอกรหัสผ่านใหม่",
+              backgroundColor: Colors.redAccent,
+              colorText: Colors.white,
+            );
             developer.log('password not valid');
           }
         })
