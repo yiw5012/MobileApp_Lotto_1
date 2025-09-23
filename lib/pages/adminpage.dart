@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lotto_1/config/config.dart';
 import 'package:lotto_1/model/request/Lotto_insert_post_res.dart';
 import 'package:lotto_1/model/request/wininglotto_add_post_req.dart';
@@ -35,7 +36,6 @@ class Adminpage extends StatefulWidget {
 class _AdminpageState extends State<Adminpage> {
   int _selectedIndex = 0; // เก็บ index ของ nav bar
   late List<Widget> _pages;
-  List<DateTime?> _selectedDates = [];
 
   @override
   void initState() {
@@ -97,10 +97,30 @@ class _AdminContentState extends State<AdminContent> {
   var copy = TextEditingController();
   final random = Random();
   late Future<void> loadData;
+  String? selectdate;
+  String? selectmonth;
+  bool lotto_have = false;
+  int lotto_count = 0;
   // var random_lotto = List<String>;
   // var uid_lotto = List<int>;
   // List<String> = random_lotto = [];
   // Lis
+
+  final Map<String, String> listMonths = {
+    "01": "มกราคม",
+    "02": "กุมภาพันธ์",
+    "03": "มีนาคม",
+    "04": "เมษายน",
+    "05": "พฤษภาคม",
+    "06": "มิถุนายน",
+    "07": "กรกฎาคม",
+    "08": "สิงหาคม",
+    "09": "กันยายน",
+    "10": "ตุลาคม",
+    "11": "พฤศจิกายน",
+    "12": "ธันวาคม",
+  };
+  final Map<String, String> listdate = {"01": "วันที่ 1", "16": "วันที่ 16"};
 
   @override
   void initState() {
@@ -161,7 +181,6 @@ class _AdminContentState extends State<AdminContent> {
                         color: const Color.fromARGB(255, 0, 0, 0),
                       ),
                       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-
                       // สีพื้นหลังปุ่ม
                     ),
                     onPressed: (Random_lotto_number),
@@ -178,9 +197,41 @@ class _AdminContentState extends State<AdminContent> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      side: BorderSide(
+                        width: 2.0,
+                        color: const Color.fromARGB(255, 0, 0, 0),
+                      ),
+                      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+
+                      // สีพื้นหลังปุ่ม
+                    ),
+                    onPressed: () {
+                      check_for_random();
+                      // CheckForSure(0);
+                    },
+                    icon: const Icon(
+                      Icons.star,
+                      size: 24.0,
+                      color: Color.fromARGB(255, 0, 0, 0),
+                    ),
+                    label: const Text(
+                      "ออกรางวัล",
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 0, 0, 0),
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  // const SizedBox(width: 10),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      delete_user_lotto();
+                    },
                     style: ElevatedButton.styleFrom(
                       side: BorderSide(
                         width: 2.0,
@@ -203,11 +254,11 @@ class _AdminContentState extends State<AdminContent> {
 
             Card(
               child: Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.all(1),
                 child: SingleChildScrollView(
                   child: Container(
-                    width: 280,
-                    height: 350,
+                    width: 400,
+                    height: 400,
                     child: Column(
                       children: const [
                         Text(
@@ -238,73 +289,131 @@ class _AdminContentState extends State<AdminContent> {
     );
   }
 
+  void list_of_day_and_month() {}
+
   void Random_lotto_number() {
     developer.log("Hello world");
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return Padding(
-          padding: const EdgeInsets.only(top: 130),
-          child: SingleChildScrollView(
-            child: AlertDialog(
-              title: const Text("สุ่มเลขที่จะเพิ่มใน Lotto"),
-              content: const Text("ใส่ข้อมูลต่างๆ"),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: TextField(
-                    controller: date_start,
-                    decoration: InputDecoration(
-                      labelText: "ประจำงวดวันที่ (YYYY-MM-DD)",
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: TextField(
-                    controller: date_end,
-                    decoration: InputDecoration(
-                      labelText: "สิ้นสุดวันที่ (YYYY-MM-DD)",
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: TextField(
-                    controller: copy,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(labelText: "ทั้งหมดกี่ฉบับ"),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: TextField(
-                    controller: lotto_price,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(labelText: "ราคาต่อฉบับ"),
-                  ),
-                ),
+        return Center(
+          child: StatefulBuilder(
+            builder: (BuildContext context, setStateDialog) {
+              return Padding(
+                padding: const EdgeInsets.only(),
+                child: SingleChildScrollView(
+                  child: AlertDialog(
+                    title: const Text("สุ่มเลขที่จะเพิ่มใน Lotto"),
+                    content: const Text("ใส่ข้อมูลต่างๆ"),
+                    actions: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: const [
+                          Text("ประจำงวดวันที่"),
+                          Padding(
+                            padding: EdgeInsets.only(right: 25),
+                            child: Text("ประจำเดือนที่"),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: DropdownButton<String>(
+                              hint: const Text("เลือกงวด"),
+                              value: selectdate,
+                              items: listdate.entries.map((entry) {
+                                return DropdownMenuItem<String>(
+                                  value: entry.key,
+                                  child: Text(entry.value),
+                                );
+                              }).toList(),
+                              onChanged: (String? newvalue) {
+                                // update inside dialog
+                                setStateDialog(() {
+                                  selectdate = newvalue;
+                                  // developer.log("Date: ${selectdate.toString()}");
+                                });
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                // update main state as well
+                                setState(() {
+                                  date_end.text = newvalue ?? "";
+                                  today_date();
+                                });
 
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        CheckForSure(0);
-                      },
-                      child: Text("Random_reward"),
-                    ),
-                    FilledButton(
-                      onPressed: () {
-                        CheckForSure(1);
-                      },
-                      child: Text("add_lotto"),
-                    ),
-                  ],
+                                // developer.log(selectdate.toString());
+                              },
+                            ),
+                          ),
+
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: DropdownButton<String>(
+                              hint: const Text("เลือกงวด"),
+                              value: selectmonth,
+                              items: listMonths.entries.map((entry) {
+                                return DropdownMenuItem<String>(
+                                  value: entry.key,
+                                  child: Text(entry.value),
+                                );
+                              }).toList(),
+                              onChanged: (String? newvalue) {
+                                // update inside dialog
+                                setStateDialog(() {
+                                  selectmonth = newvalue;
+                                  // developer.log("month: ${selectmonth.toString()}");
+                                });
+
+                                // update main state as well
+                                setState(() {
+                                  date_end.text = newvalue ?? "";
+                                  today_date();
+                                });
+
+                                // developer.log(selectdate.toString());
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: TextField(
+                          controller: copy,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            labelText: "ทั้งหมดกี่ฉบับ",
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: TextField(
+                          controller: lotto_price,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            labelText: "ราคาต่อฉบับ",
+                          ),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          FilledButton(
+                            onPressed: () {
+                              CheckForSure(1);
+                            },
+                            child: const Text("add_lotto"),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ],
-            ),
+              );
+            },
           ),
         );
       },
@@ -312,6 +421,10 @@ class _AdminContentState extends State<AdminContent> {
   }
 
   void CheckForSure(path) {
+    // selectdate;
+    // selectmonth;
+    // developer.log("${selectmonth.toString()}-${selectdate.toString()}");
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -333,8 +446,16 @@ class _AdminContentState extends State<AdminContent> {
                   onPressed: () {
                     if (path == 0) {
                       Random_reward();
-                    } else {
+                      developer.log("random_work");
+                    } else if (path == 1) {
+                      date_config(selectdate, selectmonth);
                       Insert_lotto();
+                      developer.log("Today Date: ${date_start.text}");
+                      developer.log("Date to add: ${date_end.text}");
+                    } else if (path == 2) {
+                      delete_all_lotto();
+                    } else if (path == 3) {
+                      delete_all_users();
                     }
                     Navigator.of(context).pop();
                     Navigator.of(context).pop();
@@ -415,6 +536,144 @@ class _AdminContentState extends State<AdminContent> {
     }
   }
 
+  // Random_lotto_number
+  void check_for_random() {
+    developer.log("check for random work");
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, setstateDialog2) {
+            return Padding(
+              padding: const EdgeInsets.only(),
+              child: Center(
+                child: SingleChildScrollView(
+                  child: AlertDialog(
+                    title: const Text("สุ่มออกรางวัล"),
+                    content: const Text("เลือกงวดที่ต้องการออกรางวัล"),
+                    actions: [
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: const [
+                          Text("ประจำงวดวันที่"),
+                          Padding(
+                            padding: EdgeInsets.only(right: 25),
+                            child: Text("ประจำเดือนที่"),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: DropdownButton<String>(
+                              hint: const Text("เลือกงวด"),
+                              value: selectdate,
+                              items: listdate.entries.map((entry) {
+                                return DropdownMenuItem<String>(
+                                  value: entry.key,
+                                  child: Text(entry.value),
+                                );
+                              }).toList(),
+                              onChanged: (String? newvalue) {
+                                // update inside dialog
+                                setstateDialog2(() {
+                                  selectdate = newvalue;
+                                  // developer.log("Date: ${selectdate.toString()}");
+                                });
+
+                                // update main state as well
+                                setState(() {
+                                  date_end.text = newvalue ?? "";
+                                  today_date();
+                                });
+
+                                // developer.log(selectdate.toString());
+                              },
+                            ),
+                          ),
+
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: DropdownButton<String>(
+                              hint: const Text("เลือกงวด"),
+                              value: selectmonth,
+                              items: listMonths.entries.map((entry) {
+                                return DropdownMenuItem<String>(
+                                  value: entry.key,
+                                  child: Text(entry.value),
+                                );
+                              }).toList(),
+                              onChanged: (String? newvalue) {
+                                // update inside dialog
+                                setstateDialog2(() {
+                                  selectmonth = newvalue;
+                                  // developer.log("month: ${selectmonth.toString()}");
+                                });
+
+                                // update main state as well
+                                setState(() {
+                                  date_end.text = newvalue ?? "";
+                                  today_date();
+                                });
+                                // developer.log(selectdate.toString());
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 20),
+                              child: Text("Lotto In Cerren: ${lotto_count}"),
+                            ),
+
+                            Text("Lotto Found: ${lotto_have}"),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          FilledButton(
+                            onPressed: () async {
+                              var to_set = await check_lotto_list();
+                              bool have = to_set["have"];
+                              int count = to_set["count"];
+
+                              setstateDialog2(() {
+                                lotto_have = have;
+                                lotto_count = count;
+                              });
+                            },
+                            child: Text("Check_Lotto"),
+                          ),
+                          if (lotto_have && lotto_count >= 5)
+                            FilledButton(
+                              onPressed: () {
+                                developer.log("work");
+                                CheckForSure(0);
+                              },
+                              child: Text("Random_Reward"),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   Future<void> getlotto() async {
     var res = await http.get(
       Uri.parse("https://node-project-ho8q.onrender.com/lotto"),
@@ -427,10 +686,25 @@ class _AdminContentState extends State<AdminContent> {
     //     developer.log("Price: ${lottoList[i].price}");
     // developer.log(lottoList.length.toString());
     //   }
+    List<LottoListGetRes> lottolist_after_filter = [];
+    developer.log("date End to add: ${date_end.text}");
+    for (var lotto_for_filler in lottoList) {
+      if (lotto_for_filler.dateEnd.substring(0, 4) ==
+          date_end.text.substring(0, 4)) {
+        if (lotto_for_filler.dateEnd.substring(5, 7) ==
+            date_end.text.substring(5, 7)) {
+          if (lotto_for_filler.dateEnd.substring(8, 10) ==
+              date_end.text.substring(8, 10)) {
+            lottolist_after_filter.add(lotto_for_filler);
+          }
+        }
+      }
+    }
+
     int len = 0;
     List<int> price = [6000000, 200000, 80000, 4000, 2000];
     List<int> wining_list = [];
-    for (var lotto in lottoList) {
+    for (var lotto in lottolist_after_filter) {
       // developer.log(lotto.lottoNumber.bitLength.toString());
       // if (lotto.lottoNumber.toString().length == 6) {
       // developer.log('${lotto.lottoNumber}, ${lotto.price}, ${lotto.lid}');
@@ -444,26 +718,27 @@ class _AdminContentState extends State<AdminContent> {
     }
     int pri = 0;
     for (var win in wining_list) {
-      developer.log(lottoList[win].lid.toString());
+      developer.log(lottolist_after_filter[win].lid.toString());
       // developer.log('wining: ${win.toString()}');
-      developer.log(lottoList[win].lottoNumber.toString());
-      developer.log(lottoList[win].dateEnd.toString());
+      developer.log(lottolist_after_filter[win].lottoNumber.toString());
+      developer.log(lottolist_after_filter[win].dateEnd.toString());
       developer.log(price[pri].toString());
-      pri++;
-      developer.log('------------------------------');
+
       WiningLottoAddPostReq req = WiningLottoAddPostReq(
-        lid: lottoList[win].lid,
-        winningLottoNumber: lottoList[win].lottoNumber.toString(),
+        lid: lottolist_after_filter[win].lid,
+        winningLottoNumber: lottolist_after_filter[win].lottoNumber.toString(),
         rank: pri + 1,
-        date: lottoList[win].dateEnd,
+        date: lottolist_after_filter[win].dateEnd,
         prize: price[pri],
       );
+      pri++;
       var res = await http.post(
         Uri.parse('$url/lotto/add_winning_lotto'),
         headers: {"Content-Type": "application/json; charset=utf-8"},
         body: winingLottoAddPostReqToJson(req),
       );
       developer.log(res.body);
+      developer.log('------------------------------');
     }
   }
 
@@ -480,5 +755,141 @@ class _AdminContentState extends State<AdminContent> {
     }
     developer.log('lotto_num_list as String: $lotto_num_list');
     return lotto_num_list;
+  }
+
+  void today_date() {
+    var now = DateTime.now();
+    var formatter = DateFormat('yyyy-MM-dd');
+    String formattedDate = formatter.format(now);
+    date_start.text = formattedDate;
+    // developer.log(date_start.text);
+    // setState(() {
+    //   print(formattedDate); // Example: 2025-09-19
+
+    //   developer.log("work!!");
+
+    //   developer.log(date_end.text);
+    // });
+  }
+
+  void date_config(day, month) {
+    var now = DateTime.now();
+    var formatter = DateFormat('yyyy');
+    String formattedDate = formatter.format(now);
+    String dateadd =
+        "${formattedDate.toString()}-${month.toString()}-${day.toString()}";
+    // developer.log(dateadd);
+    date_end.text = dateadd;
+  }
+
+  Future<Map<String, dynamic>> check_lotto_list() async {
+    developer.log("List of lotto wotk");
+    date_config(selectdate, selectmonth);
+    developer.log(url);
+    var res = await http.get(Uri.parse("$url/lotto"));
+    // developer.log(res.body);
+    // bool lotto_have = false;
+    // int lotto_count = 0;
+    bool have = false;
+    int count = 0;
+    List<LottoListGetRes> lottoList = lottoListGetResFromJson(res.body);
+    developer.log(date_end.text);
+    for (var lotto in lottoList) {
+      if (lotto.dateEnd.substring(0, 4) == date_end.text.substring(0, 4)) {
+        if (lotto.dateEnd.substring(5, 7) == date_end.text.substring(5, 7)) {
+          if (lotto.dateEnd.substring(8, 10) ==
+              date_end.text.substring(8, 10)) {
+            developer.log(lotto.dateEnd);
+            developer.log(lotto.dateEnd.substring(0, 4));
+            developer.log(lotto.dateEnd.substring(5, 7));
+            developer.log(lotto.dateEnd.substring(8, 10));
+            have = true;
+            count++;
+          }
+        }
+      }
+      continue;
+    }
+    if (have) {
+      // setState(() {
+      //   lotto_count = count;
+      //   lotto_have = have;
+      // });
+      developer.log("lotto have");
+      developer.log("Lotto_count: ${lotto_count}");
+    } else {
+      // setState(() {
+      //   lotto_count = 0;
+      //   lotto_have = false;
+      // });
+      have = false;
+      count = 0;
+      developer.log("lotto not have");
+    }
+    return {"have": have, "count": count};
+    // developer.log(lottoList.toString());
+  }
+
+  void delete_user_lotto() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Center(
+          child: StatefulBuilder(
+            builder: (BuildContext context, setstateDialog3) {
+              return Padding(
+                padding: const EdgeInsets.only(),
+                child: Center(
+                  child: SingleChildScrollView(
+                    child: AlertDialog(
+
+                      title: const Text("ลบข้อมูลในฐานข้อมูล"),
+                      content: const Text(
+                        "เลือกข้อมูลที่จะลบตามฟังก์ชันดังนี้",
+                      ),
+                      actions: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            FilledButton(
+                              onPressed: () {
+                                CheckForSure(2);
+                              },
+                              child: const Text("Delete Lottos"),
+                            ),
+                            FilledButton(
+                              onPressed: () {
+                                CheckForSure(3);
+                              },
+                              child: const Text("Delete Users"),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  void delete_all_lotto() async {
+    developer.log("delete all lotto work");
+      var res = await http.delete(
+      Uri.parse("$url/lotto/delete_lotto"),
+    );
+    developer.log(res.body);
+  }
+
+  void delete_all_users() async {
+    developer.log("delete users work");
+      var res = await http.delete(
+      Uri.parse("$url/user/delete_users"),
+    );
+    developer.log(res.body);
   }
 }
