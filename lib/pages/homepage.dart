@@ -11,6 +11,9 @@ import 'package:lotto_1/pages/Member.dart';
 import 'package:lotto_1/pages/cart.dart';
 import 'package:lotto_1/pages/sell.dart';
 
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
+
 class HomePage extends StatefulWidget {
   final int uid;
 
@@ -75,6 +78,7 @@ class _HomePageState extends State<HomePage> {
 /// ✅ แยก UI ของหน้าแรกออกมา (เพื่อความเป็นระเบียบ)
 class HomeContent extends StatefulWidget {
   int user = 0;
+
   HomeContent({super.key, required this.user});
 
   @override
@@ -83,9 +87,14 @@ class HomeContent extends StatefulWidget {
 
 class _HomeContentState extends State<HomeContent> {
   String url = '';
+  DateTime date = DateTime.now();
+  // var dateunig = DateTime.now();
+  late String newDate;
+  late String DateNow;
   late Future<void> loaddata;
   String lottoNumber = "";
   late List<LottoListGetRes> lottoListGetRes = [];
+
   LottoListGetRes? foundlotto;
   TextEditingController l6 = TextEditingController();
   // final ConfigController config = Get.put(ConfigController()); //ดึงค่า
@@ -94,10 +103,14 @@ class _HomeContentState extends State<HomeContent> {
     super.initState();
     dev.log("HomeContent initState called");
     loaddata = loaddatLotto();
+    newDate = formatThaiDate(date);
   }
 
   @override
   Widget build(BuildContext context) {
+    Intl.defaultLocale = "th";
+    initializeDateFormatting();
+
     return FutureBuilder(
       future: loaddata,
       builder: (context, snapshot) {
@@ -118,9 +131,9 @@ class _HomeContentState extends State<HomeContent> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const Text(
-              'งวดวันที่ 16 สิงหาคม 2568',
-              style: TextStyle(
+            Text(
+              newDate,
+              style: const TextStyle(
                 fontSize: 15,
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -191,7 +204,9 @@ class _HomeContentState extends State<HomeContent> {
                           const SizedBox(height: 10),
                           ElevatedButton(
                             onPressed: () {
-                              Get.to(Sell());
+                              Get.to(
+                                Cartpage(uid: widget.user, initialIndex: 1),
+                              );
                               // Navigator.push(
                               //   context,
                               //   MaterialPageRoute(
@@ -203,42 +218,43 @@ class _HomeContentState extends State<HomeContent> {
                           ),
                           Column(
                             children: [
-                              if (foundlotto != null) ...[
-                                const SizedBox(height: 20),
-                                Text(
-                                  "ผลการค้นหา",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                Card(
-                                  child: ListTile(
-                                    title: Text(
-                                      foundlotto!.lottoNumber.toString(),
-                                      style: const TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    subtitle: Text(
-                                      "ราคา: ${foundlotto!.price} บาท\nวันที่: ${foundlotto!.dateStart}",
-                                    ),
-                                    trailing: ElevatedButton(
-                                      onPressed: () => saleLotto(
-                                        foundlotto!.lid,
-                                        widget.user,
-                                      ),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.redAccent,
-                                        foregroundColor: Colors.white,
-                                      ),
-                                      child: const Text("ซื้อ"),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              // if (foundlotto != null) ...[
+
+                              //   const SizedBox(height: 20),
+                              //   Text(
+                              //     "ผลการค้นหา",
+                              //     style: TextStyle(
+                              //       fontSize: 20,
+                              //       fontWeight: FontWeight.bold,
+                              //       color: Colors.black,
+                              //     ),
+                              //   ),
+                              //   Card(
+                              //     child: ListTile(
+                              //       title: Text(
+                              //         foundlotto!.lottoNumber.toString(),
+                              //         style: const TextStyle(
+                              //           fontSize: 22,
+                              //           fontWeight: FontWeight.bold,
+                              //         ),
+                              //       ),
+                              //       subtitle: Text(
+                              //         "ราคา: ${foundlotto!.price} บาท\nวันที่: ${foundlotto!.dateStart}",
+                              //       ),
+                              //       trailing: ElevatedButton(
+                              //         onPressed: () => saleLotto(
+                              //           foundlotto!.lid,
+                              //           widget.user,
+                              //         ),
+                              //         style: ElevatedButton.styleFrom(
+                              //           backgroundColor: Colors.redAccent,
+                              //           foregroundColor: Colors.white,
+                              //         ),
+                              //         child: const Text("ซื้อ"),
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ],
 
                               // แสดงลอตเตอรี่ทั้งหมด
                               ...lottoListGetRes.map(
@@ -262,7 +278,9 @@ class _HomeContentState extends State<HomeContent> {
                                               ),
                                             ),
                                             Text(
-                                              lotto.dateStart,
+                                              formatThaiDateFromString(
+                                                lotto.dateStart,
+                                              ),
                                               style: const TextStyle(
                                                 fontSize: 14,
                                                 color: Colors.grey,
@@ -343,6 +361,7 @@ class _HomeContentState extends State<HomeContent> {
   }
 
   findLotto(String lotto) async {
+    bool found = false;
     // dev.log(lotto);
     for (var i = 0; i < lottoListGetRes.length; i++) {
       if (lotto == lottoListGetRes[i].lottoNumber.toString()) {
@@ -350,10 +369,40 @@ class _HomeContentState extends State<HomeContent> {
         setState(() {
           foundlotto = lottoListGetRes[i];
         });
-        return;
+        found = true;
+
+        return Get.defaultDialog(
+          title: "ผลการค้นหา",
+          content: ListTile(
+            title: Text(
+              foundlotto!.lottoNumber.toString(),
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text(
+              "ราคา: ${foundlotto!.price} บาท\nวันที่: ${formatThaiDateFromString(foundlotto!.dateStart)}",
+            ),
+            trailing: ElevatedButton(
+              onPressed: () => saleLotto(foundlotto!.lid, widget.user),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text("ซื้อ"),
+            ),
+          ),
+        );
       } else {
         dev.log("erorr");
       }
+    }
+    if (!found) {
+      Get.snackbar(
+        "แจ้งเตือน",
+        "กรุณากดปุ่มสุ่มหวย",
+        icon: const Icon(Icons.notification_important),
+        snackPosition: SnackPosition.TOP,
+      );
+      dev.log("error: ไม่พบเลข");
     }
   }
 
@@ -397,19 +446,43 @@ class _HomeContentState extends State<HomeContent> {
         );
         dev.log(res.body);
         if (res.statusCode == 201) {
-          Get.back();
+          Get.dialog(Cartpage(uid: uid));
           Get.defaultDialog(
-            title: "คุณซื้อลอตเตอรี่สำเร็จ!!",
-            middleText: "ไปหน้าชำระเงินเลยมั้ยยย",
-            onConfirm: () {
-              Get.back();
-              Get.to(Cartpage(uid: uid));
-            },
-
-            onCancel: () {},
-            buttonColor: Colors.redAccent,
-            cancelTextColor: Colors.black,
+            title: "แจ้งเตือน",
+            middleText: "กรุณาชำระเงิน",
+            content: const Column(
+              children: [
+                Icon(Icons.check_circle, color: Colors.green, size: 60),
+                SizedBox(height: 10),
+                Text("ซื้อลอตเตอรี่สำเร็จ"),
+              ],
+            ),
+            barrierDismissible: false,
           );
+          Future.delayed(Duration(seconds: 2), () {
+            if (Get.isDialogOpen!) {
+              Get.back();
+            }
+          });
+          // Get.snackbar(
+          //   "แจ้งเตือน!",
+          //   "กรุณาชำระเงิน",
+          //   icon: const Icon(Icons.notification_important),
+          //   backgroundColor: Colors.red,
+          //   snackPosition:
+          // );
+          // Get.defaultDialog(
+          //   title: "คุณซื้อลอตเตอรี่สำเร็จ!!",
+          //   middleText: "ไปหน้าชำระเงินเลยมั้ยยย",
+          //   onConfirm: () {
+          //     Get.back();
+          //     Get.to(Cartpage(uid: uid));
+          //   },
+
+          //   onCancel: () {},
+          //   buttonColor: Colors.redAccent,
+          //   cancelTextColor: Colors.black,
+          // );
         }
       },
       buttonColor: Colors.redAccent,
@@ -434,3 +507,17 @@ class _HomeContentState extends State<HomeContent> {
 //     url.value = config['apiEndpoint'];
 //   }
 // }
+String formatThaiDate(DateTime date) {
+  final thaiYear = date.year + 543;
+  final formatter = DateFormat('d MMMM', 'th_TH'); // วันและเดือน
+  return '${formatter.format(date)} $thaiYear';
+}
+
+String formatThaiDateFromString(String dateStr) {
+  // แปลง String เป็น DateTime
+  DateTime date = DateTime.parse(dateStr); // ต้องเป็น format "yyyy-MM-dd"
+
+  final thaiYear = date.year + 543;
+  final formatter = DateFormat('d MMMM', 'th_TH'); // วันและเดือน
+  return '${formatter.format(date)} $thaiYear';
+}
