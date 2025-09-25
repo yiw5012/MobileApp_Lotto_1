@@ -146,235 +146,225 @@ class _AdminContentState extends State<AdminContent> {
         centerTitle: false,
         automaticallyImplyLeading: false,
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const Text(
-                "สุ่มออก",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(255, 255, 255, 255),
-                ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Text(
+              "สุ่มออก",
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 255, 255, 255),
               ),
-              const Text(
-                "รางวัลลอตเตอรี่",
+            ),
+            const Text(
+              "รางวัลลอตเตอรี่",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                color: Color.fromARGB(255, 255, 255, 255),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: Text(
+                "งวดวันที่ ${date_end.text}",
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   color: Color.fromARGB(255, 255, 255, 255),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: Text(
-                  "งวดวันที่ ${date_end.text}",
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Color.fromARGB(255, 255, 255, 255),
-                  ),
-                ),
-              ),
-              SizedBox(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          side: const BorderSide(
-                            width: 2.0,
-                            color: Color.fromARGB(255, 0, 0, 0),
-                          ),
-                          backgroundColor: const Color.fromARGB(
-                            255,
-                            255,
-                            255,
-                            255,
-                          ),
-                          // สีพื้นหลังปุ่ม
+            ),
+            SizedBox(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
                         ),
-                        onPressed: (Random_lotto_number),
-                        icon: const Icon(
-                          Icons.star,
-                          size: 24.0,
+                        side: const BorderSide(
+                          width: 2.0,
                           color: Color.fromARGB(255, 0, 0, 0),
                         ),
-                        label: const Text(
-                          "สุ่มรางวัล",
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 0, 0, 0),
-                            fontSize: 16,
-                          ),
+                        backgroundColor: const Color.fromARGB(
+                          255,
+                          255,
+                          255,
+                          255,
+                        ),
+                        // สีพื้นหลังปุ่ม
+                      ),
+                      onPressed: (Random_lotto_number),
+                      icon: const Icon(
+                        Icons.star,
+                        size: 24.0,
+                        color: Color.fromARGB(255, 0, 0, 0),
+                      ),
+                      label: const Text(
+                        "สุ่มรางวัล",
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 0, 0, 0),
+                          fontSize: 16,
                         ),
                       ),
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          side: const BorderSide(
-                            width: 2.0,
-                            color: Color.fromARGB(255, 0, 0, 0),
-                          ),
-                          backgroundColor: const Color.fromARGB(
-                            255,
-                            255,
-                            255,
-                            255,
-                          ),
-
-                          // สีพื้นหลังปุ่ม
+                    ),
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
                         ),
-                        onPressed: () {
-                          check_for_random();
-                          // CheckForSure(0);
-                        },
-                        icon: const Icon(
-                          Icons.star,
-                          size: 24.0,
+                        side: const BorderSide(
+                          width: 2.0,
                           color: Color.fromARGB(255, 0, 0, 0),
                         ),
-                        label: const Text(
-                          "ออกรางวัล",
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 0, 0, 0),
-                            fontSize: 16,
-                          ),
+                        backgroundColor: const Color.fromARGB(
+                          255,
+                          255,
+                          255,
+                          255,
                         ),
-                      ),
-                      // const SizedBox(width: 10),
-                      ElevatedButton(
-                        onPressed: () {
-                          delete_user_lotto();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          side: const BorderSide(
-                            width: 2.0,
-                            color: Color.fromARGB(255, 255, 255, 255),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          backgroundColor: const Color.fromARGB(
-                            255,
-                            10,
-                            2,
-                            159,
-                          ),
-                          // สีพื้นหลังปุ่ม
-                        ),
-                        child: const Text(
-                          "รีเช็ตระบบ",
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
 
-              Expanded(
-                child: ListView.builder(
-                  itemCount: Lottoaddnew.length,
-                  itemBuilder: (context, index) {
-                    final lotto = Lottoaddnew[index];
-                    return Card(
-                      margin: EdgeInsets.symmetric(
-                        vertical: 10,
-                        horizontal: 16,
+                        // สีพื้นหลังปุ่ม
                       ),
-                      elevation: 5,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
+                      onPressed: () {
+                        check_for_random();
+                        // CheckForSure(0);
+                      },
+                      icon: const Icon(
+                        Icons.star,
+                        size: 24.0,
+                        color: Color.fromARGB(255, 0, 0, 0),
                       ),
-                      color: const Color.fromARGB(
-                        255,
-                        255,
-                        255,
-                        255,
-                      ), // สีพื้นหลังการ์ดแบบหวย
-                      child: Container(
-                        padding: EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              'สลากกินแบ่งรัฐบาล',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.deepPurple,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              lotto.lottoNumber.toString().padLeft(6, '0'),
-                              style: TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.redAccent,
-                                letterSpacing: 4,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Divider(color: Colors.black),
-                            SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'ราคา: ${lotto.price} บาท',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.green,
-                                  ),
-                                ),
-                                Text(
-                                  'LID: ${lotto.lid}',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'วันที่เริ่ม: ${lotto.dateStart.toString().split("T")[0]}',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey[700],
-                                  ),
-                                ),
-                                Text(
-                                  'วันสิ้นสุด: ${lotto.dateEnd.toString().split("T")[0]}',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey[700],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                      label: const Text(
+                        "ออกรางวัล",
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 0, 0, 0),
+                          fontSize: 16,
                         ),
                       ),
-                    );
-                  },
+                    ),
+                    // const SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        delete_user_lotto();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        side: const BorderSide(
+                          width: 2.0,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        backgroundColor: const Color.fromARGB(255, 10, 2, 159),
+                        // สีพื้นหลังปุ่ม
+                      ),
+                      child: const Text(
+                        "รีเช็ตระบบ",
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+
+            Expanded(
+              child: ListView.builder(
+                itemCount: Lottoaddnew.length,
+                itemBuilder: (context, index) {
+                  final lotto = Lottoaddnew[index];
+                  return Card(
+                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    color: const Color.fromARGB(
+                      255,
+                      255,
+                      255,
+                      255,
+                    ), // สีพื้นหลังการ์ดแบบหวย
+                    child: Container(
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'สลากกินแบ่งรัฐบาล',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.deepPurple,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            lotto.lottoNumber.toString().padLeft(6, '0'),
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.redAccent,
+                              letterSpacing: 4,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Divider(color: Colors.black),
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'ราคา: ${lotto.price} บาท',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.green,
+                                ),
+                              ),
+                              Text(
+                                'LID: ${lotto.lid}',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'วันที่เริ่ม: ${lotto.dateStart.toString().split("T")[0]}',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey[700],
+                                ),
+                              ),
+                              Text(
+                                'วันสิ้นสุด: ${lotto.dateEnd.toString().split("T")[0]}',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey[700],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -1033,13 +1023,11 @@ class _AdminContentState extends State<AdminContent> {
   void delete_all_lotto() async {
     developer.log("delete all lotto work");
     var res = await http.delete(Uri.parse("$url/lotto/delete_lotto"));
-    var res = await http.delete(Uri.parse("$url/lotto/delete_lotto"));
     developer.log(res.body);
   }
 
   void delete_all_users() async {
     developer.log("delete users work");
-    var res = await http.delete(Uri.parse("$url/user/delete_users"));
     var res = await http.delete(Uri.parse("$url/user/delete_users"));
     developer.log(res.body);
   }
