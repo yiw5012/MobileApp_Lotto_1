@@ -47,7 +47,7 @@ class _LoginPegesState extends State<LoginPeges> {
                   child: ClipOval(
                     // logo
                     child: Image.asset(
-                      "logo.png",
+                      "assets/logo.png",
                       width: 250,
                       height: 250,
                       fit: BoxFit.cover,
