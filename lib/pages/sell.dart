@@ -125,11 +125,7 @@ class _SellState extends State<Sell> {
         backgroundColor: Colors.redAccent,
         title: const Text(
           "ผลรางวัลลอตเตอรี่",
-          style: TextStyle(
-            color: Colors.white,
-            // fontWeight: FontWeight.bold,
-            // fontSize: 24,
-          ),
+          style: TextStyle(color: Colors.white),
         ),
       ),
       body: Padding(
@@ -189,7 +185,6 @@ class _SellState extends State<Sell> {
                           child: Text(
                             formatted,
                             style: const TextStyle(
-                              // fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color: Colors.black87,
                             ),
@@ -242,6 +237,37 @@ class _SellState extends State<Sell> {
                       itemCount: winningLottos.length,
                       itemBuilder: (context, index) {
                         final lotto = winningLottos[index];
+
+                        // --- เลขที่ถูกรางวัล ---
+                        String winningNumber;
+                        if (lotto.rank == 4) {
+                          // เลขท้าย 3 ตัวจากรางวัลที่ 1
+                          final firstPrize = winningLottos
+                              .firstWhere((e) => e.rank == 1)
+                              .winningLottoNumber;
+                          winningNumber = firstPrize.substring(
+                            firstPrize.length - 3,
+                            firstPrize.length,
+                          );
+                        } else if (lotto.rank == 5) {
+                          // เลขท้าย 2 ตัว
+                          winningNumber = lotto.winningLottoNumber.substring(
+                            lotto.winningLottoNumber.length - 2,
+                          );
+                        } else {
+                          winningNumber = lotto.winningLottoNumber;
+                        }
+
+                        // --- ชื่อรางวัล ---
+                        String rankName;
+                        if (lotto.rank == 4) {
+                          rankName = "เลขท้าย 3 ตัว";
+                        } else if (lotto.rank == 5) {
+                          rankName = "เลขท้าย 2 ตัว";
+                        } else {
+                          rankName = "รางวัลที่ ${lotto.rank}";
+                        }
+
                         return Card(
                           margin: const EdgeInsets.symmetric(
                             vertical: 6,
@@ -253,7 +279,7 @@ class _SellState extends State<Sell> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  "รางวัลที่ ${lotto.rank}",
+                                  rankName,
                                   style: const TextStyle(
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold,
@@ -261,25 +287,13 @@ class _SellState extends State<Sell> {
                                 ),
                                 const SizedBox(height: 6),
                                 Text(
-                                  "เลขที่ถูกรางวัล: " +
-                                      (lotto.rank == 4
-                                          ? lotto.winningLottoNumber.substring(
-                                              lotto.winningLottoNumber.length -
-                                                  3,
-                                            )
-                                          : lotto.rank == 5
-                                          ? lotto.winningLottoNumber.substring(
-                                              lotto.winningLottoNumber.length -
-                                                  2,
-                                            )
-                                          : lotto.winningLottoNumber),
+                                  "เลขที่ถูกรางวัล: $winningNumber",
                                   style: const TextStyle(
                                     fontSize: 20,
                                     color: Colors.red,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-
                                 const SizedBox(height: 6),
                                 Text(
                                   "เงินรางวัล: ${lotto.prize} บาท",
