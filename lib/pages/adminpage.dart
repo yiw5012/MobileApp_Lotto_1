@@ -6,6 +6,7 @@ import 'package:lotto_1/config/config.dart';
 import 'package:lotto_1/model/request/Lotto_insert_post_res.dart';
 import 'package:lotto_1/model/request/wininglotto_add_post_req.dart';
 import 'package:lotto_1/model/response/lottolist_get_res.dart';
+import 'package:lotto_1/model/response/winning_lotto_res.dart';
 import 'package:lotto_1/pages/Member.dart';
 import 'package:lotto_1/pages/adminProfile.dart';
 import 'package:lotto_1/pages/cart.dart';
@@ -136,154 +137,156 @@ class _AdminContentState extends State<AdminContent> {
     return Scaffold(
       backgroundColor: Colors.redAccent,
       appBar: AppBar(title: const Text("Admin Page"), centerTitle: false),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const Text(
-              "สุ่มออก",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 255, 255, 255),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Text(
+                "สุ่มออก",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 255, 255, 255),
+                ),
               ),
-            ),
-            const Text(
-              "รางวัลลอตเตอรี่",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: Color.fromARGB(255, 255, 255, 255),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10.0),
-              child: const Text(
-                "งวดวันที่ 16 สิงหาคม 2568",
+              const Text(
+                "รางวัลลอตเตอรี่",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
                   color: Color.fromARGB(255, 255, 255, 255),
                 ),
               ),
-            ),
-            SizedBox(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      side: BorderSide(
-                        width: 2.0,
-                        color: const Color.fromARGB(255, 0, 0, 0),
-                      ),
-                      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-                      // สีพื้นหลังปุ่ม
-                    ),
-                    onPressed: (Random_lotto_number),
-                    icon: const Icon(
-                      Icons.star,
-                      size: 24.0,
-                      color: Color.fromARGB(255, 0, 0, 0),
-                    ),
-                    label: const Text(
-                      "สุ่มรางวัล",
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 0, 0, 0),
-                        fontSize: 16,
-                      ),
-                    ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: const Text(
+                  "งวดวันที่ 16 สิงหาคม 2568",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color.fromARGB(255, 255, 255, 255),
                   ),
-                  ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      side: BorderSide(
-                        width: 2.0,
-                        color: const Color.fromARGB(255, 0, 0, 0),
-                      ),
-                      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-
-                      // สีพื้นหลังปุ่ม
-                    ),
-                    onPressed: () {
-                      check_for_random();
-                      // CheckForSure(0);
-                    },
-                    icon: const Icon(
-                      Icons.star,
-                      size: 24.0,
-                      color: Color.fromARGB(255, 0, 0, 0),
-                    ),
-                    label: const Text(
-                      "ออกรางวัล",
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 0, 0, 0),
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                  // const SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      delete_user_lotto();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      side: BorderSide(
-                        width: 2.0,
-                        color: const Color.fromARGB(255, 255, 255, 255),
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      backgroundColor: const Color.fromARGB(255, 10, 2, 159),
-                      // สีพื้นหลังปุ่ม
-                    ),
-                    child: Text(
-                      "รีเช็ตระบบ",
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(1),
-                child: SingleChildScrollView(
-                  child: Container(
-                    width: 400,
-                    height: 400,
-                    child: Column(
-                      children: const [
-                        Text(
-                          "รางวัลที่ 1",
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                          ),
+              SizedBox(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
                         ),
-                        SizedBox(height: 10),
-                        Text(
-                          "123456",
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red,
-                          ),
+                        side: BorderSide(
+                          width: 2.0,
+                          color: const Color.fromARGB(255, 0, 0, 0),
                         ),
-                      ],
+                        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+                        // สีพื้นหลังปุ่ม
+                      ),
+                      onPressed: (Random_lotto_number),
+                      icon: const Icon(
+                        Icons.star,
+                        size: 24.0,
+                        color: Color.fromARGB(255, 0, 0, 0),
+                      ),
+                      label: const Text(
+                        "สุ่มรางวัล",
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 0, 0, 0),
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        side: BorderSide(
+                          width: 2.0,
+                          color: const Color.fromARGB(255, 0, 0, 0),
+                        ),
+                        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        
+                        // สีพื้นหลังปุ่ม
+                      ),
+                      onPressed: () {
+                        check_for_random();
+                        // CheckForSure(0);
+                      },
+                      icon: const Icon(
+                        Icons.star,
+                        size: 24.0,
+                        color: Color.fromARGB(255, 0, 0, 0),
+                      ),
+                      label: const Text(
+                        "ออกรางวัล",
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 0, 0, 0),
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    // const SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        delete_user_lotto();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        side: BorderSide(
+                          width: 2.0,
+                          color: const Color.fromARGB(255, 255, 255, 255),
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        backgroundColor: const Color.fromARGB(255, 10, 2, 159),
+                        // สีพื้นหลังปุ่ม
+                      ),
+                      child: Text(
+                        "รีเช็ตระบบ",
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+        
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(1),
+                  child: SingleChildScrollView(
+                    child: Container(
+                      width: 400,
+                      height: 400,
+                      child: Column(
+                        children: const [
+                          Text(
+                            "รางวัลที่ 1",
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            "123456",
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -630,10 +633,10 @@ class _AdminContentState extends State<AdminContent> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(right: 20),
-                              child: Text("Lotto In Cerren: ${lotto_count}"),
+                              child: Text("Lotto Cerren: ${lotto_count}"),
                             ),
 
-                            Text("Lotto Found: ${lotto_have}"),
+                            Text("Lotto Reward: ${lotto_have}"),
                           ],
                         ),
                       ),
@@ -653,7 +656,7 @@ class _AdminContentState extends State<AdminContent> {
                             },
                             child: Text("Check_Lotto"),
                           ),
-                          if (lotto_have && lotto_count >= 5)
+                          if (!lotto_have && lotto_count >= 5)
                             FilledButton(
                               onPressed: () {
                                 developer.log("work");
@@ -803,20 +806,22 @@ class _AdminContentState extends State<AdminContent> {
             developer.log(lotto.dateEnd.substring(0, 4));
             developer.log(lotto.dateEnd.substring(5, 7));
             developer.log(lotto.dateEnd.substring(8, 10));
-            have = true;
+            // have = true;
             count++;
           }
         }
       }
       continue;
     }
-    if (have) {
+    if (count > 0) {
+      have = await haveReward();
       // setState(() {
       //   lotto_count = count;
       //   lotto_have = have;
       // });
       developer.log("lotto have");
-      developer.log("Lotto_count: ${lotto_count}");
+      developer.log("Lotto_count: ${count}");
+
     } else {
       // setState(() {
       //   lotto_count = 0;
@@ -829,6 +834,25 @@ class _AdminContentState extends State<AdminContent> {
     return {"have": have, "count": count};
     // developer.log(lottoList.toString());
   }
+
+Future<bool> haveReward() async {
+  try {
+    developer.log(date_end.text);
+    final res = await http.get(Uri.parse('$url/lotto/winning_lotto/date/${date_end.text}'));
+
+    if (res.statusCode != 200) {
+      developer.log('haveReward: bad status ${res.statusCode}');
+      return false;
+    }
+
+    final List<WinningLotto> winningLotto = winningLottoFromJson(res.body);
+    developer.log('haveReward: count = ${winningLotto.length}');
+    return winningLotto.isNotEmpty; // true if >= 1
+  } catch (e, st) {
+    developer.log('haveReward error: $e\n$st');
+    return false;
+  }
+}
 
   void delete_user_lotto() {
     showDialog(
