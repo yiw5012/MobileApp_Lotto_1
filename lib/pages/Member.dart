@@ -71,6 +71,7 @@ class _MemberState extends State<Member> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.redAccent,
       // The app bar at the top of the screen.
       appBar: AppBar(
         title: const Text(

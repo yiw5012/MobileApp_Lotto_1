@@ -354,6 +354,10 @@ class _PayMentOrderState extends State<PayMentOrder> {
         Get.defaultDialog(
           title: 'คุณไม่ถูกรางวัล',
           content: const Text("คุณไม่ถูกรางวัล แย่จัง!!"),
+          confirmTextColor: Colors.white,
+          cancelTextColor: Colors.black,
+
+          buttonColor: Colors.redAccent,
           onCancel: () {
             setState(() {
               loadData = loadDataAsync(); // เรียก FutureBuilder ใหม่
@@ -367,6 +371,9 @@ class _PayMentOrderState extends State<PayMentOrder> {
           //   TextButton(
           //     onPressed: () {
           //       Get.back(); // ✅ ปิด dialog ก่อน
+          //       setState(() {
+          //         loadData = loadDataAsync(); // เรียก FutureBuilder ใหม่
+          //       });
           //     },
           //     child: Text("ปิด"),
           //   ),
