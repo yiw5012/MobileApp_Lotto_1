@@ -96,8 +96,19 @@ class _HomeContentState extends State<HomeContent> {
   late List<LottoListGetRes> lottoListGetRes = [];
 
   LottoListGetRes? foundlotto;
-  TextEditingController l6 = TextEditingController();
-  // final ConfigController config = Get.put(ConfigController()); //ดึงค่า
+  List<TextEditingController> controllers = List.generate(
+    6,
+    (_) => TextEditingController(),
+  );
+
+  @override
+  void dispose() {
+    for (var c in controllers) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -154,54 +165,70 @@ class _HomeContentState extends State<HomeContent> {
                           const SizedBox(height: 20),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children:
-                                (lottoNumber.isEmpty ? "000000" : lottoNumber)
-                                    .split('')
-                                    .map(
-                                      (digit) => Padding(
-                                        padding: const EdgeInsets.all(5.0),
-                                        child: Row(
-                                          children: [
-                                            Container(
-                                              width: 35,
-                                              height: 35,
-                                              decoration: BoxDecoration(
-                                                color: Colors.blue,
-                                                borderRadius:
-                                                    BorderRadius.circular(6),
-                                              ),
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                digit,
-                                                style: const TextStyle(
-                                                  fontSize: 18,
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                    .toList(),
+                            children: List.generate(6, (index) {
+                              return Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: SizedBox(
+                                  width: 40,
+                                  child: TextField(
+                                    controller: controllers[index],
+                                    maxLength: 1, // จำกัดตัวละ 1 หลัก
+                                    keyboardType: TextInputType.number,
+                                    textAlign: TextAlign.center,
+                                    decoration: const InputDecoration(
+                                      counterText: '', // ลบ counter
+                                      border: OutlineInputBorder(),
+                                    ),
+                                    onChanged: (value) {
+                                      if (value.length == 1 && index < 5) {
+                                        // เลื่อนไปช่องถัดไปอัตโนมัติ
+                                        FocusScope.of(context).nextFocus();
+                                      }
+                                    },
+                                  ),
+                                ),
+                              );
+                            }),
                           ),
-                          const SizedBox(height: 20),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
+                              const SizedBox(height: 20),
+
                               ElevatedButton(
                                 onPressed: randLotto,
-                                child: const Text('สุ่มหวย'),
+                                child: const Text('สุ่มหวยจากฐาน'),
                               ),
-                              const SizedBox(width: 10),
+                              const SizedBox(height: 20),
                               ElevatedButton(
-                                onPressed: () => findLotto(lottoNumber),
+                                onPressed: () {
+                                  String lottoNumber = controllers
+                                      .map((c) => c.text)
+                                      .join();
+                                  if (lottoNumber.length != 6) {
+                                    Get.snackbar(
+                                      "แจ้งเตือน",
+                                      "กรุณากรอกเลขครบ 6 หลัก",
+                                    );
+                                    return;
+                                  }
+                                  findLotto(lottoNumber).then((_) {
+                                    // ล้างเลขหลังค้นหาเสร็จ
+                                    for (var c in controllers) {
+                                      c.clear();
+                                    }
+                                    // เลื่อนโฟกัสกลับไปช่องแรก
+                                    FocusScope.of(
+                                      context,
+                                    ).requestFocus(FocusNode());
+                                  });
+                                },
                                 child: const Text('ค้นหาเลข'),
                               ),
                             ],
                           ),
                           const SizedBox(height: 10),
+
                           ElevatedButton(
                             onPressed: () {
                               Get.to(
@@ -351,38 +378,54 @@ class _HomeContentState extends State<HomeContent> {
       Get.snackbar("แจ้งเตือน", "ยังไม่มีข้อมูล");
       return;
     }
+
     final random = Random();
     final randomlid = random.nextInt(lottoListGetRes.length);
     final newNumber = lottoListGetRes[randomlid].lottoNumber.toString();
 
     setState(() {
       lottoNumber = newNumber;
+      // อัปเดต TextEditingController แต่ละตัว
+      for (int i = 0; i < 6; i++) {
+        controllers[i].text = newNumber[i];
+      }
     });
   }
 
-  findLotto(String lotto) async {
-    bool found = false;
-    // dev.log(lotto);
-    for (var i = 0; i < lottoListGetRes.length; i++) {
-      if (lotto == lottoListGetRes[i].lottoNumber.toString()) {
-        dev.log(lottoListGetRes[i].toString());
-        setState(() {
-          foundlotto = lottoListGetRes[i];
-        });
-        found = true;
+  // void randLotto() {
+  //   if (lottoListGetRes.isEmpty) {
+  //     dev.log("ยังไม่มีลอตเตอรี่ให้สุ่ม");
+  //     Get.snackbar("แจ้งเตือน", "ยังไม่มีข้อมูล");
+  //     return;
+  //   }
+  //   final random = Random();
+  //   final randomlid = random.nextInt(lottoListGetRes.length);
+  //   final newNumber = lottoListGetRes[randomlid].lottoNumber.toString();
 
-        return Get.defaultDialog(
+  //   setState(() {
+  //     lottoNumber = newNumber;
+  //   });
+  // }
+  Future<bool> findLotto(String lotto) async {
+    for (var l in lottoListGetRes) {
+      if (l.lottoNumber.toString() == lotto) {
+        setState(() {
+          foundlotto = l;
+        });
+
+        // ✅ แสดงผลถ้าค้นหาเจอ
+        Get.defaultDialog(
           title: "ผลการค้นหา",
           content: ListTile(
             title: Text(
-              foundlotto!.lottoNumber.toString(),
+              l.lottoNumber.toString(),
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             subtitle: Text(
-              "ราคา: ${foundlotto!.price} บาท\nวันที่: ${formatThaiDateFromString(foundlotto!.dateStart)}",
+              "ราคา: ${l.price} บาท\nวันที่: ${formatThaiDateFromString(l.dateStart)}",
             ),
             trailing: ElevatedButton(
-              onPressed: () => saleLotto(foundlotto!.lid, widget.user),
+              onPressed: () => saleLotto(l.lid, widget.user),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.redAccent,
                 foregroundColor: Colors.white,
@@ -391,19 +434,22 @@ class _HomeContentState extends State<HomeContent> {
             ),
           ),
         );
-      } else {
-        dev.log("erorr");
+        return true; // ✅ เจอ
       }
     }
-    if (!found) {
-      Get.snackbar(
-        "แจ้งเตือน",
-        "กรุณากดปุ่มสุ่มหวย",
-        icon: const Icon(Icons.notification_important),
-        snackPosition: SnackPosition.TOP,
-      );
-      dev.log("error: ไม่พบเลข");
-    }
+
+    // ❌ ถ้าไม่เจอ
+    Get.snackbar(
+      "แจ้งเตือน",
+      "ไม่พบเลขที่ค้นหา",
+      icon: const Icon(Icons.warning, color: Colors.red),
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: Colors.yellow[100],
+      colorText: Colors.black,
+      duration: const Duration(seconds: 2),
+    );
+
+    return false;
   }
 
   Future<void> loaddatLotto() async {
