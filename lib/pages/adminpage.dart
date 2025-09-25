@@ -1033,13 +1033,11 @@ class _AdminContentState extends State<AdminContent> {
   void delete_all_lotto() async {
     developer.log("delete all lotto work");
     var res = await http.delete(Uri.parse("$url/lotto/delete_lotto"));
-    var res = await http.delete(Uri.parse("$url/lotto/delete_lotto"));
     developer.log(res.body);
   }
 
   void delete_all_users() async {
     developer.log("delete users work");
-    var res = await http.delete(Uri.parse("$url/user/delete_users"));
     var res = await http.delete(Uri.parse("$url/user/delete_users"));
     developer.log(res.body);
   }
