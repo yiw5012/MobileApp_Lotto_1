@@ -541,8 +541,8 @@ class _AdminContentState extends State<AdminContent> {
                       delete_all_users();
                     }
                     Get.snackbar(
-                      "เพิ่ม Lotto สำเร็จ !!",
-                      "เพิ่มสำเร็จ!!",
+                      "ทำรายการสำเร็จแล้ว !!",
+                      "รายการเสร็จสมบูรณ์!!",
                       backgroundColor: Colors.green,
                     );
 
