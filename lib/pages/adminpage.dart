@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import 'package:intl/intl.dart';
 import 'package:lotto_1/config/config.dart';
 import 'package:lotto_1/model/request/Lotto_insert_post_res.dart';
@@ -136,7 +137,11 @@ class _AdminContentState extends State<AdminContent> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.redAccent,
-      appBar: AppBar(title: const Text("Admin Page"), centerTitle: false),
+      appBar: AppBar(
+        title: const Text("Admin Page"),
+        centerTitle: false,
+        automaticallyImplyLeading: false,
+      ),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
@@ -158,17 +163,17 @@ class _AdminContentState extends State<AdminContent> {
                   color: Color.fromARGB(255, 255, 255, 255),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: const Text(
-                  "งวดวันที่ 16 สิงหาคม 2568",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Color.fromARGB(255, 255, 255, 255),
-                  ),
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.only(bottom: 10.0),
+              //   child: const Text(
+              //     "งวดวันที่ 16 สิงหาคม 2568",
+              //     textAlign: TextAlign.center,
+              //     style: TextStyle(
+              //       fontSize: 16,
+              //       color: Color.fromARGB(255, 255, 255, 255),
+              //     ),
+              //   ),
+              // ),
               SizedBox(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -180,11 +185,16 @@ class _AdminContentState extends State<AdminContent> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          side: BorderSide(
+                          side: const BorderSide(
                             width: 2.0,
-                            color: const Color.fromARGB(255, 0, 0, 0),
+                            color: Color.fromARGB(255, 0, 0, 0),
                           ),
-                          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+                          backgroundColor: const Color.fromARGB(
+                            255,
+                            255,
+                            255,
+                            255,
+                          ),
                           // สีพื้นหลังปุ่ม
                         ),
                         onPressed: (Random_lotto_number),
@@ -206,12 +216,17 @@ class _AdminContentState extends State<AdminContent> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          side: BorderSide(
+                          side: const BorderSide(
                             width: 2.0,
-                            color: const Color.fromARGB(255, 0, 0, 0),
+                            color: Color.fromARGB(255, 0, 0, 0),
                           ),
-                          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-                          
+                          backgroundColor: const Color.fromARGB(
+                            255,
+                            255,
+                            255,
+                            255,
+                          ),
+
                           // สีพื้นหลังปุ่ม
                         ),
                         onPressed: () {
@@ -237,17 +252,22 @@ class _AdminContentState extends State<AdminContent> {
                           delete_user_lotto();
                         },
                         style: ElevatedButton.styleFrom(
-                          side: BorderSide(
+                          side: const BorderSide(
                             width: 2.0,
-                            color: const Color.fromARGB(255, 255, 255, 255),
+                            color: Color.fromARGB(255, 255, 255, 255),
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          backgroundColor: const Color.fromARGB(255, 10, 2, 159),
+                          backgroundColor: const Color.fromARGB(
+                            255,
+                            10,
+                            2,
+                            159,
+                          ),
                           // สีพื้นหลังปุ่ม
                         ),
-                        child: Text(
+                        child: const Text(
                           "รีเช็ตระบบ",
                           style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
@@ -256,7 +276,7 @@ class _AdminContentState extends State<AdminContent> {
                   ),
                 ),
               ),
-        
+
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(1),
@@ -264,8 +284,8 @@ class _AdminContentState extends State<AdminContent> {
                     child: Container(
                       width: 400,
                       height: 400,
-                      child: Column(
-                        children: const [
+                      child: const Column(
+                        children: [
                           Text(
                             "รางวัลที่ 1",
                             style: TextStyle(
@@ -295,8 +315,6 @@ class _AdminContentState extends State<AdminContent> {
     );
   }
 
-  void list_of_day_and_month() {}
-
   void Random_lotto_number() {
     developer.log("Hello world");
     showDialog(
@@ -312,9 +330,9 @@ class _AdminContentState extends State<AdminContent> {
                     title: const Text("สุ่มเลขที่จะเพิ่มใน Lotto"),
                     content: const Text("ใส่ข้อมูลต่างๆ"),
                     actions: [
-                      Row(
+                      const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
+                        children: [
                           Text("ประจำงวดวันที่"),
                           Padding(
                             padding: EdgeInsets.only(right: 25),
@@ -435,8 +453,8 @@ class _AdminContentState extends State<AdminContent> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("คูณแน่ใจหรือยังที่จะทำรายการต่อไปนี้"),
-          content: Text("ยืนยันการทำรายการ"),
+          title: const Text("คูณแน่ใจหรือยังที่จะทำรายการต่อไปนี้"),
+          content: const Text("ยืนยันการทำรายการ"),
           actions: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -446,7 +464,7 @@ class _AdminContentState extends State<AdminContent> {
                     Navigator.of(context).pop();
                     Navigator.of(context).pop();
                   },
-                  child: Text("ยกเลิก"),
+                  child: const Text("ยกเลิก"),
                 ),
                 FilledButton(
                   onPressed: () {
@@ -466,7 +484,7 @@ class _AdminContentState extends State<AdminContent> {
                     Navigator.of(context).pop();
                     Navigator.of(context).pop();
                   },
-                  child: Text("ยืนยัน"),
+                  child: const Text("ยืนยัน"),
                 ),
               ],
             ),
@@ -616,7 +634,6 @@ class _AdminContentState extends State<AdminContent> {
                                 setstateDialog2(() {
                                   selectmonth = newvalue;
 
-                                  
                                   // developer.log("month: ${selectmonth.toString()}");
                                 });
 
@@ -655,13 +672,13 @@ class _AdminContentState extends State<AdminContent> {
                                 var to_set = await check_lotto_list();
                                 bool have = to_set["have"];
                                 int count = to_set["count"];
-                        
+
                                 setstateDialog2(() {
                                   lotto_have = have;
                                   lotto_count = count;
                                 });
                               },
-                              child: Text("Check_Lotto"),
+                              child: const Text("Check_Lotto"),
                             ),
                             if (!lotto_have && lotto_count >= 5)
                               FilledButton(
@@ -669,7 +686,7 @@ class _AdminContentState extends State<AdminContent> {
                                   developer.log("work");
                                   CheckForSure(0);
                                 },
-                                child: Text("Random_Reward"),
+                                child: const Text("Random_Reward"),
                               ),
                           ],
                         ),
@@ -829,7 +846,6 @@ class _AdminContentState extends State<AdminContent> {
       // });
       developer.log("lotto have");
       developer.log("Lotto_count: ${count}");
-
     } else {
       // setState(() {
       //   lotto_count = 0;
@@ -843,24 +859,26 @@ class _AdminContentState extends State<AdminContent> {
     // developer.log(lottoList.toString());
   }
 
-Future<bool> haveReward() async {
-  try {
-    developer.log(date_end.text);
-    final res = await http.get(Uri.parse('$url/lotto/winning_lotto/date/${date_end.text}'));
+  Future<bool> haveReward() async {
+    try {
+      developer.log(date_end.text);
+      final res = await http.get(
+        Uri.parse('$url/lotto/winning_lotto/date/${date_end.text}'),
+      );
 
-    if (res.statusCode != 200) {
-      developer.log('haveReward: bad status ${res.statusCode}');
+      if (res.statusCode != 200) {
+        developer.log('haveReward: bad status ${res.statusCode}');
+        return false;
+      }
+
+      final List<WinningLotto> winningLotto = winningLottoFromJson(res.body);
+      developer.log('haveReward: count = ${winningLotto.length}');
+      return winningLotto.isNotEmpty; // true if >= 1
+    } catch (e, st) {
+      developer.log('haveReward error: $e\n$st');
       return false;
     }
-
-    final List<WinningLotto> winningLotto = winningLottoFromJson(res.body);
-    developer.log('haveReward: count = ${winningLotto.length}');
-    return winningLotto.isNotEmpty; // true if >= 1
-  } catch (e, st) {
-    developer.log('haveReward error: $e\n$st');
-    return false;
   }
-}
 
   void delete_user_lotto() {
     showDialog(
@@ -874,7 +892,6 @@ Future<bool> haveReward() async {
                 child: Center(
                   child: SingleChildScrollView(
                     child: AlertDialog(
-
                       title: const Text("ลบข้อมูลในฐานข้อมูล"),
                       content: const Text(
                         "เลือกข้อมูลที่จะลบตามฟังก์ชันดังนี้",
@@ -914,17 +931,13 @@ Future<bool> haveReward() async {
 
   void delete_all_lotto() async {
     developer.log("delete all lotto work");
-      var res = await http.delete(
-      Uri.parse("$url/lotto/delete_lotto"),
-    );
+    var res = await http.delete(Uri.parse("$url/lotto/delete_lotto"));
     developer.log(res.body);
   }
 
   void delete_all_users() async {
     developer.log("delete users work");
-      var res = await http.delete(
-      Uri.parse("$url/user/delete_users"),
-    );
+    var res = await http.delete(Uri.parse("$url/user/delete_users"));
     developer.log(res.body);
   }
 }
