@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:lotto_1/config/config.dart';
 import 'package:lotto_1/model/request/Lotto_insert_post_res.dart';
 import 'package:lotto_1/model/request/wininglotto_add_post_req.dart';
 import 'package:lotto_1/model/response/lottolist_get_res.dart';
+import 'package:lotto_1/model/response/winning_lotto_res.dart';
 import 'package:lotto_1/pages/Member.dart';
 import 'package:lotto_1/pages/adminProfile.dart';
 import 'package:lotto_1/pages/cart.dart';
@@ -89,6 +91,7 @@ class AdminContent extends StatefulWidget {
 }
 
 class _AdminContentState extends State<AdminContent> {
+  late LottoListGetRes lotto;
   var url = '';
   var date_start = TextEditingController();
   var lottonumber = '';
@@ -105,7 +108,7 @@ class _AdminContentState extends State<AdminContent> {
   // var uid_lotto = List<int>;
   // List<String> = random_lotto = [];
   // Lis
-
+  List<LottoListGetRes> Lottoaddnew = [];
   final Map<String, String> listMonths = {
     "01": "มกราคม",
     "02": "กุมภาพันธ์",
@@ -252,35 +255,93 @@ class _AdminContentState extends State<AdminContent> {
               ),
             ),
 
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(1),
-                child: SingleChildScrollView(
-                  child: Container(
-                    width: 400,
-                    height: 400,
-                    child: Column(
-                      children: const [
-                        Text(
-                          "รางวัลที่ 1",
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "123456",
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red,
-                          ),
-                        ),
-                      ],
+            Expanded(
+              child: ListView.builder(
+                itemCount: Lottoaddnew.length,
+                itemBuilder: (context, index) {
+                  final lotto = Lottoaddnew[index];
+                  return Card(
+                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
                     ),
-                  ),
-                ),
+                    color: const Color.fromARGB(
+                      255,
+                      255,
+                      255,
+                      255,
+                    ), // สีพื้นหลังการ์ดแบบหวย
+                    child: Container(
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'สลากกินแบ่งรัฐบาล',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.deepPurple,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            lotto.lottoNumber.toString().padLeft(6, '0'),
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.redAccent,
+                              letterSpacing: 4,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Divider(color: Colors.black),
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'ราคา: ${lotto.price} บาท',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.green,
+                                ),
+                              ),
+                              Text(
+                                'LID: ${lotto.lid}',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'วันที่เริ่ม: ${lotto.dateStart.toString().split("T")[0]}',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey[700],
+                                ),
+                              ),
+                              Text(
+                                'วันสิ้นสุด: ${lotto.dateEnd.toString().split("T")[0]}',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey[700],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ],
@@ -533,6 +594,9 @@ class _AdminContentState extends State<AdminContent> {
       );
 
       developer.log("Inserted ${lotto_list[index]} → ${res.body}");
+      final responseJson = jsonDecode(res.body);
+      var lid_new = responseJson["lid"];
+      getLotto_new(lid_new);
     }
   }
 
@@ -842,7 +906,6 @@ class _AdminContentState extends State<AdminContent> {
                 child: Center(
                   child: SingleChildScrollView(
                     child: AlertDialog(
-
                       title: const Text("ลบข้อมูลในฐานข้อมูล"),
                       content: const Text(
                         "เลือกข้อมูลที่จะลบตามฟังก์ชันดังนี้",
@@ -879,17 +942,33 @@ class _AdminContentState extends State<AdminContent> {
 
   void delete_all_lotto() async {
     developer.log("delete all lotto work");
-      var res = await http.delete(
-      Uri.parse("$url/lotto/delete_lotto"),
-    );
+    var res = await http.delete(Uri.parse("$url/lotto/delete_lotto"));
     developer.log(res.body);
   }
 
   void delete_all_users() async {
     developer.log("delete users work");
-      var res = await http.delete(
-      Uri.parse("$url/user/delete_users"),
-    );
+    var res = await http.delete(Uri.parse("$url/user/delete_users"));
     developer.log(res.body);
+  }
+
+  Future<void> getLotto_new(lid_new) async {
+    var res = await http.get(Uri.parse("$url/lotto/$lid_new"));
+
+    if (res.statusCode == 200) {
+      final data = jsonDecode(res.body);
+
+      // ✅ กรณี server ส่งมาเป็น List
+      if (data is List && data.isNotEmpty) {
+        final lotto = LottoListGetRes.fromJson(data[0]); // ใช้ item แรก
+        setState(() {
+          if (!Lottoaddnew.any((e) => e.lid == lotto.lid)) {
+            Lottoaddnew.add(lotto);
+          } // หรือเก็บใน list เพื่อใช้ .map
+        });
+      }
+    } else {
+      print("ไม่พบข้อมูลล็อตโต้ lid = $lid_new");
+    }
   }
 }
