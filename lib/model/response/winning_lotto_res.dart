@@ -42,3 +42,11 @@ class WinningLotto {
     'prize': prize,
   };
 }
+
+List<String> winningDatesFromJson(String str) {
+  final List<dynamic> jsonData = json.decode(str);
+  return jsonData
+      .map((x) => WinningLotto.fromJson(x).date)
+      .toSet() // กันวันที่ซ้ำ
+      .toList();
+}
