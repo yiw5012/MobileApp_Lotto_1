@@ -282,91 +282,94 @@ class _PayMentOrderState extends State<PayMentOrder> {
         "oid": oid,
       }),
     );
+
     log(res.statusCode.toString());
     log(res.body);
+
     final responseJson = jsonDecode(res.body);
+
     if (res.statusCode != 200) {
       Get.defaultDialog(
         title: 'เกิดข้อผิดพลาด',
         content: Text("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้"),
-        actions: [TextButton(onPressed: () {}, child: Text("ปิด"))],
+        actions: [TextButton(onPressed: () => Get.back(), child: Text("ปิด"))],
       );
       return;
+    }
+
+    final message = responseJson["message"].toString();
+    final data = responseJson["data"];
+
+    // ✅ ถูกรางวัล
+    if (message.contains("ถูกรางวัล") && data != null) {
+      var oid = data["oid"];
+      int prize = data["prize"];
+      var rank = data["rank"];
+
+      Get.defaultDialog(
+        title: 'คุณถูกรางวัลที่ $rank',
+        content: Text("คุณถูกรางวัล $prize บาท"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back();
+              Get.to(() => Cartpage(uid: uid));
+            },
+            child: Text("ปิด"),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Get.dialog(
+                Center(child: CircularProgressIndicator()),
+                barrierDismissible: false,
+              );
+
+              final updateRes = await http.post(
+                Uri.parse('$url/order/updateMoney'),
+                headers: {"Content-Type": "application/json"},
+                body: jsonEncode({"uid": uid, "oid": oid, "prize": prize}),
+              );
+
+              Get.back(); // ปิด loading
+
+              if (updateRes.statusCode == 200) {
+                Get.snackbar(
+                  "สำเร็จ",
+                  "ขึ้นเงินสำเร็จแล้ว",
+                  backgroundColor: Colors.green,
+                  colorText: Colors.white,
+                );
+                Get.off(() => Member(uid: uid));
+              } else {
+                Get.snackbar("ล้มเหลว", "ไม่สามารถขึ้นเงินได้");
+              }
+            },
+            child: Text("ขึ้นเงิน"),
+          ),
+        ],
+      );
     } else {
-      if (responseJson["message"] == "ถูกรางวัล!") {
-        final data = responseJson["data"];
-        int oid = data["old"];
-        int prize = data["prize"];
-        Get.defaultDialog(
-          title: 'คุณถูกรางวัล',
-          content: Text("คุณถูกรางวัล  $prize"),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Get.back(); // ✅ ปิด dialog ก่อน
-                Get.to(() => Member(uid: uid));
-              },
-              child: Text("ปิด"),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                Get.dialog(
-                  Center(child: CircularProgressIndicator()),
-                  barrierDismissible: false,
-                );
-
-                final updateRes = await http.post(
-                  Uri.parse('$url/order/updateMoney'),
-                  headers: {"Content-Type": "application/json"},
-                  body: jsonEncode({"uid": uid, "oid": oid, "prize": prize}),
-                );
-
-                Get.back(); // ปิด loading
-
-                if (updateRes.statusCode == 200) {
-                  Get.snackbar(
-                    "สำเร็จ",
-                    "ขึ้นเงินสำเร็จแล้ว",
-                    backgroundColor: Colors.green,
-                    colorText: Colors.white,
-                  );
-                  Get.off(() => Member(uid: uid));
-                } else {
-                  Get.snackbar("ล้มเหลว", "ไม่สามารถขึ้นเงินได้");
-                }
-              },
-              child: Text("ขึ้นเงิน"),
-            ),
-          ],
-        );
-        log(responseJson["message"]);
-      } else {
-        Get.defaultDialog(
-          title: 'คุณไม่ถูกรางวัล',
-          content: Text("คุณไม่ถูกรางวัล แย่จัง!!"),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Get.back(); // ✅ ปิด dialog ก่อน
-                // Get.to(() {
-                //   final cartState = Get.context
-                //       ?.findAncestorStateOfType<_CartpageState>();
-                //   cartState?.changeTab(1);
-                // });
-              },
-              child: Text("ปิด"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Get.back(); // ✅ ปิด dialog ก่อน
-                Get.to(() => HomePage(uid: uid));
-              },
-              child: Text("ชื้อหวยอีกก!!"),
-            ),
-          ],
-        );
-        log(responseJson["message"]);
-      }
+      // ❌ ไม่ถูกรางวัล
+      Get.defaultDialog(
+        title: 'คุณไม่ถูกรางวัล',
+        content: Text("คุณไม่ถูกรางวัล แย่จัง!!"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back(); // ปิด dialog
+              Get.to(Cartpage(uid: uid));
+            },
+            child: Text("ปิด"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Get.back(); // ปิด dialog
+              Get.to(() => HomePage(uid: uid));
+            },
+            child: Text("ซื้อหวยอีก!"),
+          ),
+        ],
+      );
     }
   }
 }
