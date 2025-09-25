@@ -460,9 +460,9 @@ class _HomeContentState extends State<HomeContent> {
             barrierDismissible: false,
           );
           Future.delayed(Duration(seconds: 2), () {
-            if (Get.isDialogOpen!) {
-              Get.back();
-            }
+            // if (Get.isDialogOpen!) {
+            Get.back();
+            // }
           });
           // Get.snackbar(
           //   "แจ้งเตือน!",
