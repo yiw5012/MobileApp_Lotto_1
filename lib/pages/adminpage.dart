@@ -164,17 +164,17 @@ class _AdminContentState extends State<AdminContent> {
                   color: Color.fromARGB(255, 255, 255, 255),
                 ),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.only(bottom: 10.0),
-              //   child: const Text(
-              //     "งวดวันที่ 16 สิงหาคม 2568",
-              //     textAlign: TextAlign.center,
-              //     style: TextStyle(
-              //       fontSize: 16,
-              //       color: Color.fromARGB(255, 255, 255, 255),
-              //     ),
-              //   ),
-              // ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: Text(
+                  "งวดวันที่ ${date_end.text}",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Color.fromARGB(255, 255, 255, 255),
+                  ),
+                ),
+              ),
               SizedBox(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -388,6 +388,7 @@ class _AdminContentState extends State<AdminContent> {
                               }).toList(),
                               onChanged: (String? newvalue) {
                                 // update inside dialog
+                                getWining();
                                 setStateDialog(() {
                                   selectdate = newvalue;
                                   // developer.log("Date: ${selectdate.toString()}");
@@ -397,6 +398,7 @@ class _AdminContentState extends State<AdminContent> {
                                 setState(() {
                                   date_end.text = newvalue ?? "";
                                   today_date();
+                                  date_config(selectdate, selectmonth);
                                 });
 
                                 // developer.log(selectdate.toString());
@@ -417,6 +419,7 @@ class _AdminContentState extends State<AdminContent> {
                               }).toList(),
                               onChanged: (String? newvalue) {
                                 // update inside dialog
+                                getWining();
                                 setStateDialog(() {
                                   selectmonth = newvalue;
                                   // developer.log("month: ${selectmonth.toString()}");
@@ -426,6 +429,7 @@ class _AdminContentState extends State<AdminContent> {
                                 setState(() {
                                   date_end.text = newvalue ?? "";
                                   today_date();
+                                  date_config(selectdate, selectmonth);
                                 });
 
                                 // developer.log(selectdate.toString());
@@ -634,6 +638,7 @@ class _AdminContentState extends State<AdminContent> {
                               }).toList(),
                               onChanged: (String? newvalue) {
                                 // update inside dialog
+                                getWining();
                                 setstateDialog2(() {
                                   selectdate = newvalue;
                                   // developer.log("Date: ${selectdate.toString()}");
@@ -643,6 +648,7 @@ class _AdminContentState extends State<AdminContent> {
                                 setState(() {
                                   date_end.text = newvalue ?? "";
                                   today_date();
+                                  date_config(selectdate, selectmonth);
                                 });
 
                                 // developer.log(selectdate.toString());
@@ -663,6 +669,7 @@ class _AdminContentState extends State<AdminContent> {
                               }).toList(),
                               onChanged: (String? newvalue) {
                                 // update inside dialog
+                                getWining();
                                 setstateDialog2(() {
                                   selectmonth = newvalue;
 
@@ -673,6 +680,7 @@ class _AdminContentState extends State<AdminContent> {
                                 setState(() {
                                   date_end.text = newvalue ?? "";
                                   today_date();
+                                  date_config(selectdate, selectmonth);
                                 });
                                 // developer.log(selectdate.toString());
                               },
@@ -803,7 +811,9 @@ class _AdminContentState extends State<AdminContent> {
   }
 
   Future<void> getWining() async {
+    date_config(selectdate, selectmonth);
     try {
+      developer.log(date_end.text);
       final res = await http.get(
         Uri.parse('$url/lotto/winning_lotto/date/${date_end.text}'),
       );
@@ -812,7 +822,6 @@ class _AdminContentState extends State<AdminContent> {
         developer.log("getWining: HTTP error ${res.statusCode}");
         return;
       }
-
       List<WinningLotto> getWining = winningLottoFromJson(res.body);
 
       if (getWining.isNotEmpty) {
