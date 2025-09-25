@@ -103,6 +103,7 @@ class _AdminContentState extends State<AdminContent> {
   String? selectmonth;
   bool lotto_have = false;
   int lotto_count = 0;
+  List<WinningLotto> lotto_mounth_wining = [];
   // var random_lotto = List<String>;
   // var uid_lotto = List<int>;
   // List<String> = random_lotto = [];
@@ -279,32 +280,63 @@ class _AdminContentState extends State<AdminContent> {
 
               Card(
                 child: Padding(
-                  padding: const EdgeInsets.all(1),
-                  child: SingleChildScrollView(
-                    child: Container(
-                      width: 400,
-                      height: 400,
-                      child: const Column(
-                        children: [
-                          Text(
-                            "รางวัลที่ 1",
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: 400,
+                    height: 400,
+                    child: lotto_mounth_wining.isEmpty
+                        ? const Center(
+                            child: Text(
+                              "ไม่มีรายการรางวัลที่จะแสดง",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
+                          )
+                        : ListView.builder(
+                            itemCount: lotto_mounth_wining.length,
+                            itemBuilder: (context, index) {
+                              final lotto = lotto_mounth_wining[index];
+                              return Card(
+                                margin: const EdgeInsets.symmetric(
+                                  vertical: 6,
+                                  horizontal: 8,
+                                ),
+                                elevation: 3,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "รางวัลที่ ${lotto.rank}",
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        lotto.winningLottoNumber,
+                                        style: const TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.blueAccent,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                          SizedBox(height: 10),
-                          Text(
-                            "123456",
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   ),
                 ),
               ),
@@ -767,6 +799,30 @@ class _AdminContentState extends State<AdminContent> {
       );
       developer.log(res.body);
       developer.log('------------------------------');
+    }
+  }
+
+  Future<void> getWining() async {
+    try {
+      final res = await http.get(
+        Uri.parse('$url/lotto/winning_lotto/date/${date_end.text}'),
+      );
+
+      if (res.statusCode != 200) {
+        developer.log("getWining: HTTP error ${res.statusCode}");
+        return;
+      }
+
+      List<WinningLotto> getWining = winningLottoFromJson(res.body);
+
+      if (getWining.isNotEmpty) {
+        lotto_mounth_wining = getWining;
+      } else {
+        developer.log("getWining: no results found");
+      }
+    } catch (e, st) {
+      developer.log("getWining error: $e");
+      developer.log("Stack trace: $st");
     }
   }
 
