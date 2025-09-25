@@ -281,96 +281,100 @@ class _AdminContentState extends State<AdminContent> {
                 ),
               ),
 
-            Expanded(
-              child: ListView.builder(
-                itemCount: Lottoaddnew.length,
-                itemBuilder: (context, index) {
-                  final lotto = Lottoaddnew[index];
-                  return Card(
-                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    color: const Color.fromARGB(
-                      255,
-                      255,
-                      255,
-                      255,
-                    ), // สีพื้นหลังการ์ดแบบหวย
-                    child: Container(
-                      padding: EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            'สลากกินแบ่งรัฐบาล',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.deepPurple,
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            lotto.lottoNumber.toString().padLeft(6, '0'),
-                            style: TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.redAccent,
-                              letterSpacing: 4,
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Divider(color: Colors.black),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'ราคา: ${lotto.price} บาท',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.green,
-                                ),
-                              ),
-                              Text(
-                                'LID: ${lotto.lid}',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'วันที่เริ่ม: ${lotto.dateStart.toString().split("T")[0]}',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey[700],
-                                ),
-                              ),
-                              Text(
-                                'วันสิ้นสุด: ${lotto.dateEnd.toString().split("T")[0]}',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey[700],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+              Expanded(
+                child: ListView.builder(
+                  itemCount: Lottoaddnew.length,
+                  itemBuilder: (context, index) {
+                    final lotto = Lottoaddnew[index];
+                    return Card(
+                      margin: EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 16,
                       ),
-                    ),
-                  );
-                },
+                      elevation: 5,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      color: const Color.fromARGB(
+                        255,
+                        255,
+                        255,
+                        255,
+                      ), // สีพื้นหลังการ์ดแบบหวย
+                      child: Container(
+                        padding: EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'สลากกินแบ่งรัฐบาล',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.deepPurple,
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              lotto.lottoNumber.toString().padLeft(6, '0'),
+                              style: TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.redAccent,
+                                letterSpacing: 4,
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            Divider(color: Colors.black),
+                            SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'ราคา: ${lotto.price} บาท',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.green,
+                                  ),
+                                ),
+                                Text(
+                                  'LID: ${lotto.lid}',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'วันที่เริ่ม: ${lotto.dateStart.toString().split("T")[0]}',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                                Text(
+                                  'วันสิ้นสุด: ${lotto.dateEnd.toString().split("T")[0]}',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
