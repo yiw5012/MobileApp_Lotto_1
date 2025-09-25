@@ -479,13 +479,6 @@ class _PayMentPageState extends State<PayMentPage> {
                                         ElevatedButton(
                                           onPressed: () {
                                             Get.back();
-                                            Get.dialog(
-                                              Center(
-                                                child:
-                                                    CircularProgressIndicator(),
-                                              ),
-                                              barrierDismissible: false,
-                                            );
 
                                             payOrder(
                                               widget.uid,
@@ -567,9 +560,14 @@ class _PayMentPageState extends State<PayMentPage> {
         });
       });
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('ชำระเงินไม่สำเร็จ: ${res.body}')));
+      Get.snackbar(
+        "แจ้งเตือน",
+        "เงินไม่เพียงพอ",
+        icon: Icon(Icons.notification_important),
+      );
+      // ScaffoldMessenger.of(
+      //   context,
+      // ).showSnackBar(SnackBar(content: Text('ชำระเงินไม่สำเร็จ: ${res.body}')));
     }
   }
 }
