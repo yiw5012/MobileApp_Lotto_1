@@ -125,11 +125,7 @@ class _SellState extends State<Sell> {
         backgroundColor: Colors.redAccent,
         title: const Text(
           "ผลรางวัลลอตเตอรี่",
-          style: TextStyle(
-            color: Colors.white,
-            // fontWeight: FontWeight.bold,
-            // fontSize: 24,
-          ),
+          style: TextStyle(color: Colors.white),
         ),
       ),
       body: Padding(
@@ -156,7 +152,7 @@ class _SellState extends State<Sell> {
                 value: selectedDate,
                 isExpanded: true,
                 underline: const SizedBox(),
-                dropdownColor: Colors.white, // สีพื้นหลัง dropdown
+                dropdownColor: Colors.white,
                 icon: const Icon(
                   Icons.arrow_drop_down,
                   color: Colors.redAccent,
@@ -164,39 +160,44 @@ class _SellState extends State<Sell> {
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: Colors.black, // สีตัวอักษร item
+                  color: Colors.black,
                 ),
-                items: availableDates.map((dateString) {
-                  DateTime dt = DateTime.parse(dateString);
-                  String formatted =
-                      "งวดวันที่ ${dt.day} เดือน ${thaiMonths[dt.month]} ปี ${dt.year}";
-
-                  return DropdownMenuItem<String>(
-                    value: dateString,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                items: availableDates.isEmpty
+                    ? [
+                        const DropdownMenuItem<String>(
+                          value: 'no_date',
+                          child: Text(
+                            "ไม่มีงวดที่ออก",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Color.fromARGB(255, 0, 0, 0),
+                            ),
+                          ),
+                        ),
+                      ]
+                    : availableDates.map((dateString) {
+                        DateTime dt = DateTime.parse(dateString);
+                        String formatted =
+                            "งวดวันที่ ${dt.day} เดือน ${thaiMonths[dt.month]} ปี ${dt.year}";
+                        return DropdownMenuItem<String>(
+                          value: dateString,
                           child: Text(
                             formatted,
                             style: const TextStyle(
-                              fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color: Colors.black87,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-
-                onChanged: (value) {
-                  setState(() {
-                    selectedDate = value;
-                  });
-                },
+                        );
+                      }).toList(),
+                onChanged: (availableDates.isEmpty)
+                    ? (value) {}
+                    : (value) {
+                        setState(() {
+                          selectedDate = value;
+                        });
+                      },
               ),
             ),
 
@@ -236,6 +237,37 @@ class _SellState extends State<Sell> {
                       itemCount: winningLottos.length,
                       itemBuilder: (context, index) {
                         final lotto = winningLottos[index];
+
+                        // --- เลขที่ถูกรางวัล ---
+                        String winningNumber;
+                        if (lotto.rank == 4) {
+                          // เลขท้าย 3 ตัวจากรางวัลที่ 1
+                          final firstPrize = winningLottos
+                              .firstWhere((e) => e.rank == 1)
+                              .winningLottoNumber;
+                          winningNumber = firstPrize.substring(
+                            firstPrize.length - 3,
+                            firstPrize.length,
+                          );
+                        } else if (lotto.rank == 5) {
+                          // เลขท้าย 2 ตัว
+                          winningNumber = lotto.winningLottoNumber.substring(
+                            lotto.winningLottoNumber.length - 2,
+                          );
+                        } else {
+                          winningNumber = lotto.winningLottoNumber;
+                        }
+
+                        // --- ชื่อรางวัล ---
+                        String rankName;
+                        if (lotto.rank == 4) {
+                          rankName = "เลขท้าย 3 ตัว";
+                        } else if (lotto.rank == 5) {
+                          rankName = "เลขท้าย 2 ตัว";
+                        } else {
+                          rankName = "รางวัลที่ ${lotto.rank}";
+                        }
+
                         return Card(
                           margin: const EdgeInsets.symmetric(
                             vertical: 6,
@@ -247,7 +279,7 @@ class _SellState extends State<Sell> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  "รางวัลที่ ${lotto.rank}",
+                                  rankName,
                                   style: const TextStyle(
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold,
@@ -255,7 +287,7 @@ class _SellState extends State<Sell> {
                                 ),
                                 const SizedBox(height: 6),
                                 Text(
-                                  "เลขที่ถูกรางวัล: ${lotto.winningLottoNumber}",
+                                  "เลขที่ถูกรางวัล: $winningNumber",
                                   style: const TextStyle(
                                     fontSize: 20,
                                     color: Colors.red,

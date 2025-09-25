@@ -149,9 +149,9 @@ class _PayMentOrderState extends State<PayMentOrder> {
             child: FutureBuilder(
               future: loadData,
               builder: (context, snapshot) {
-                if (snapshot.connectionState != ConnectionState.done) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+                // if (snapshot.connectionState != ConnectionState.done) {
+                //   return const Center(child: CircularProgressIndicator());
+                // }
 
                 if (orderGetRespon.isEmpty) {
                   return const Center(child: Text("ไม่พบลอตเตอรี่"));
@@ -210,22 +210,32 @@ class _PayMentOrderState extends State<PayMentOrder> {
                                           child: Text("ปิด"),
                                         ),
                                         FilledButton(
-                                          onPressed: () {
-                                            Get.back();
-                                            Get.dialog(
-                                              Center(
-                                                child:
-                                                    CircularProgressIndicator(),
-                                              ),
-                                              barrierDismissible: false,
-                                            );
+                                          onPressed: () async {
+                                            Get.back(); // ปิด dialog confirm
 
-                                            check_lotto(
+                                            // แสดง loading
+                                            // Get.dialog(
+                                            //   const Center(
+                                            //     child:
+                                            //         CircularProgressIndicator(),
+                                            //   ),
+                                            //   barrierDismissible: false,
+                                            // );
+
+                                            // รอผลตรวจหวย
+                                            await check_lotto(
                                               widget.uid,
                                               order.lottoNumber,
                                               order.lid,
                                               order.oid,
                                             );
+
+                                            // ปิด loading
+                                            // if (Get.isDialogOpen ?? false) {
+                                            //   Get.back();
+                                            // }
+
+                                            // โหลดข้อมูลใหม่เพื่อ refresh หน้า
                                           },
                                           child: Text("ตรวจจ้ะ"),
                                         ),
@@ -348,28 +358,33 @@ class _PayMentOrderState extends State<PayMentOrder> {
           ),
         ],
       );
+      log(responseJson["message"]);
     } else {
-      // ❌ ไม่ถูกรางวัล
       Get.defaultDialog(
         title: 'คุณไม่ถูกรางวัล',
         content: Text("คุณไม่ถูกรางวัล แย่จัง!!"),
         actions: [
           TextButton(
             onPressed: () {
-              Get.back(); // ปิด dialog
-              Get.to(Cartpage(uid: uid));
+              Get.back(); // ✅ ปิด dialog ก่อน
+              // Get.to(() {
+              //   final cartState = Get.context
+              //       ?.findAncestorStateOfType<_CartpageState>();
+              //   cartState?.changeTab(1);
+              // });
             },
             child: Text("ปิด"),
           ),
           ElevatedButton(
             onPressed: () {
-              Get.back(); // ปิด dialog
+              Get.back(); // ✅ ปิด dialog ก่อน
               Get.to(() => HomePage(uid: uid));
             },
-            child: Text("ซื้อหวยอีก!"),
+            child: Text("ชื้อหวยอีกก!!"),
           ),
         ],
       );
+      log(responseJson["message"]);
     }
   }
 }
@@ -468,13 +483,6 @@ class _PayMentPageState extends State<PayMentPage> {
                                         ElevatedButton(
                                           onPressed: () {
                                             Get.back();
-                                            Get.dialog(
-                                              Center(
-                                                child:
-                                                    CircularProgressIndicator(),
-                                              ),
-                                              barrierDismissible: false,
-                                            );
 
                                             payOrder(
                                               widget.uid,
@@ -556,9 +564,14 @@ class _PayMentPageState extends State<PayMentPage> {
         });
       });
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('ชำระเงินไม่สำเร็จ: ${res.body}')));
+      Get.snackbar(
+        "แจ้งเตือน",
+        "เงินไม่เพียงพอ",
+        icon: Icon(Icons.notification_important),
+      );
+      // ScaffoldMessenger.of(
+      //   context,
+      // ).showSnackBar(SnackBar(content: Text('ชำระเงินไม่สำเร็จ: ${res.body}')));
     }
   }
 }
