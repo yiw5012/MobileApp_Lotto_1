@@ -372,6 +372,9 @@ class _PayMentOrderState extends State<PayMentOrder> {
               //       ?.findAncestorStateOfType<_CartpageState>();
               //   cartState?.changeTab(1);
               // });
+              setState(() {
+                loadData = loadDataAsync();
+              });
             },
             child: Text("ปิด"),
           ),
