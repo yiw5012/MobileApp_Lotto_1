@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import 'package:intl/intl.dart';
 import 'package:lotto_1/config/config.dart';
 import 'package:lotto_1/model/request/Lotto_insert_post_res.dart';
 import 'package:lotto_1/model/request/wininglotto_add_post_req.dart';
 import 'package:lotto_1/model/response/lottolist_get_res.dart';
+import 'package:lotto_1/model/response/winning_lotto_res.dart';
 import 'package:lotto_1/model/response/winning_lotto_res.dart';
 import 'package:lotto_1/pages/Member.dart';
 import 'package:lotto_1/pages/adminProfile.dart';
@@ -104,6 +106,7 @@ class _AdminContentState extends State<AdminContent> {
   String? selectmonth;
   bool lotto_have = false;
   int lotto_count = 0;
+  List<WinningLotto> lotto_mounth_wining = [];
   // var random_lotto = List<String>;
   // var uid_lotto = List<int>;
   // List<String> = random_lotto = [];
@@ -138,122 +141,145 @@ class _AdminContentState extends State<AdminContent> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.redAccent,
-      appBar: AppBar(title: const Text("Admin Page"), centerTitle: false),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const Text(
-              "สุ่มออก",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 255, 255, 255),
+      appBar: AppBar(
+        title: const Text("Admin Page"),
+        centerTitle: false,
+        automaticallyImplyLeading: false,
+      ),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Text(
+                "สุ่มออก",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 255, 255, 255),
+                ),
               ),
-            ),
-            const Text(
-              "รางวัลลอตเตอรี่",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: Color.fromARGB(255, 255, 255, 255),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10.0),
-              child: const Text(
-                "งวดวันที่ 16 สิงหาคม 2568",
+              const Text(
+                "รางวัลลอตเตอรี่",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
                   color: Color.fromARGB(255, 255, 255, 255),
                 ),
               ),
-            ),
-            SizedBox(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      side: BorderSide(
-                        width: 2.0,
-                        color: const Color.fromARGB(255, 0, 0, 0),
-                      ),
-                      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-                      // สีพื้นหลังปุ่ม
-                    ),
-                    onPressed: (Random_lotto_number),
-                    icon: const Icon(
-                      Icons.star,
-                      size: 24.0,
-                      color: Color.fromARGB(255, 0, 0, 0),
-                    ),
-                    label: const Text(
-                      "สุ่มรางวัล",
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 0, 0, 0),
-                        fontSize: 16,
-                      ),
-                    ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: Text(
+                  "งวดวันที่ ${date_end.text}",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Color.fromARGB(255, 255, 255, 255),
                   ),
-                  ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      side: BorderSide(
-                        width: 2.0,
-                        color: const Color.fromARGB(255, 0, 0, 0),
-                      ),
-                      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-
-                      // สีพื้นหลังปุ่ม
-                    ),
-                    onPressed: () {
-                      check_for_random();
-                      // CheckForSure(0);
-                    },
-                    icon: const Icon(
-                      Icons.star,
-                      size: 24.0,
-                      color: Color.fromARGB(255, 0, 0, 0),
-                    ),
-                    label: const Text(
-                      "ออกรางวัล",
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 0, 0, 0),
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                  // const SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      delete_user_lotto();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      side: BorderSide(
-                        width: 2.0,
-                        color: const Color.fromARGB(255, 255, 255, 255),
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      backgroundColor: const Color.fromARGB(255, 10, 2, 159),
-                      // สีพื้นหลังปุ่ม
-                    ),
-                    child: Text(
-                      "รีเช็ตระบบ",
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
+              SizedBox(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          side: const BorderSide(
+                            width: 2.0,
+                            color: Color.fromARGB(255, 0, 0, 0),
+                          ),
+                          backgroundColor: const Color.fromARGB(
+                            255,
+                            255,
+                            255,
+                            255,
+                          ),
+                          // สีพื้นหลังปุ่ม
+                        ),
+                        onPressed: (Random_lotto_number),
+                        icon: const Icon(
+                          Icons.star,
+                          size: 24.0,
+                          color: Color.fromARGB(255, 0, 0, 0),
+                        ),
+                        label: const Text(
+                          "สุ่มรางวัล",
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 0, 0, 0),
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          side: const BorderSide(
+                            width: 2.0,
+                            color: Color.fromARGB(255, 0, 0, 0),
+                          ),
+                          backgroundColor: const Color.fromARGB(
+                            255,
+                            255,
+                            255,
+                            255,
+                          ),
+
+                          // สีพื้นหลังปุ่ม
+                        ),
+                        onPressed: () {
+                          check_for_random();
+                          // CheckForSure(0);
+                        },
+                        icon: const Icon(
+                          Icons.star,
+                          size: 24.0,
+                          color: Color.fromARGB(255, 0, 0, 0),
+                        ),
+                        label: const Text(
+                          "ออกรางวัล",
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 0, 0, 0),
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      // const SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: () {
+                          delete_user_lotto();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          side: const BorderSide(
+                            width: 2.0,
+                            color: Color.fromARGB(255, 255, 255, 255),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          backgroundColor: const Color.fromARGB(
+                            255,
+                            10,
+                            2,
+                            159,
+                          ),
+                          // สีพื้นหลังปุ่ม
+                        ),
+                        child: const Text(
+                          "รีเช็ตระบบ",
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
 
             Expanded(
               child: ListView.builder(
@@ -350,8 +376,6 @@ class _AdminContentState extends State<AdminContent> {
     );
   }
 
-  void list_of_day_and_month() {}
-
   void Random_lotto_number() {
     developer.log("Hello world");
     showDialog(
@@ -367,9 +391,9 @@ class _AdminContentState extends State<AdminContent> {
                     title: const Text("สุ่มเลขที่จะเพิ่มใน Lotto"),
                     content: const Text("ใส่ข้อมูลต่างๆ"),
                     actions: [
-                      Row(
+                      const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
+                        children: [
                           Text("ประจำงวดวันที่"),
                           Padding(
                             padding: EdgeInsets.only(right: 25),
@@ -393,6 +417,7 @@ class _AdminContentState extends State<AdminContent> {
                               }).toList(),
                               onChanged: (String? newvalue) {
                                 // update inside dialog
+                                getWining();
                                 setStateDialog(() {
                                   selectdate = newvalue;
                                   // developer.log("Date: ${selectdate.toString()}");
@@ -402,6 +427,7 @@ class _AdminContentState extends State<AdminContent> {
                                 setState(() {
                                   date_end.text = newvalue ?? "";
                                   today_date();
+                                  date_config(selectdate, selectmonth);
                                 });
 
                                 // developer.log(selectdate.toString());
@@ -422,6 +448,7 @@ class _AdminContentState extends State<AdminContent> {
                               }).toList(),
                               onChanged: (String? newvalue) {
                                 // update inside dialog
+                                getWining();
                                 setStateDialog(() {
                                   selectmonth = newvalue;
                                   // developer.log("month: ${selectmonth.toString()}");
@@ -431,6 +458,7 @@ class _AdminContentState extends State<AdminContent> {
                                 setState(() {
                                   date_end.text = newvalue ?? "";
                                   today_date();
+                                  date_config(selectdate, selectmonth);
                                 });
 
                                 // developer.log(selectdate.toString());
@@ -490,8 +518,8 @@ class _AdminContentState extends State<AdminContent> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("คูณแน่ใจหรือยังที่จะทำรายการต่อไปนี้"),
-          content: Text("ยืนยันการทำรายการ"),
+          title: const Text("คูณแน่ใจหรือยังที่จะทำรายการต่อไปนี้"),
+          content: const Text("ยืนยันการทำรายการ"),
           actions: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -501,7 +529,7 @@ class _AdminContentState extends State<AdminContent> {
                     Navigator.of(context).pop();
                     Navigator.of(context).pop();
                   },
-                  child: Text("ยกเลิก"),
+                  child: const Text("ยกเลิก"),
                 ),
                 FilledButton(
                   onPressed: () {
@@ -521,7 +549,7 @@ class _AdminContentState extends State<AdminContent> {
                     Navigator.of(context).pop();
                     Navigator.of(context).pop();
                   },
-                  child: Text("ยืนยัน"),
+                  child: const Text("ยืนยัน"),
                 ),
               ],
             ),
@@ -642,6 +670,7 @@ class _AdminContentState extends State<AdminContent> {
                               }).toList(),
                               onChanged: (String? newvalue) {
                                 // update inside dialog
+                                getWining();
                                 setstateDialog2(() {
                                   selectdate = newvalue;
                                   // developer.log("Date: ${selectdate.toString()}");
@@ -651,6 +680,7 @@ class _AdminContentState extends State<AdminContent> {
                                 setState(() {
                                   date_end.text = newvalue ?? "";
                                   today_date();
+                                  date_config(selectdate, selectmonth);
                                 });
 
                                 // developer.log(selectdate.toString());
@@ -671,8 +701,10 @@ class _AdminContentState extends State<AdminContent> {
                               }).toList(),
                               onChanged: (String? newvalue) {
                                 // update inside dialog
+                                getWining();
                                 setstateDialog2(() {
                                   selectmonth = newvalue;
+
                                   // developer.log("month: ${selectmonth.toString()}");
                                 });
 
@@ -680,6 +712,7 @@ class _AdminContentState extends State<AdminContent> {
                                 setState(() {
                                   date_end.text = newvalue ?? "";
                                   today_date();
+                                  date_config(selectdate, selectmonth);
                                 });
                                 // developer.log(selectdate.toString());
                               },
@@ -694,38 +727,41 @@ class _AdminContentState extends State<AdminContent> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(right: 20),
-                              child: Text("Lotto In Cerren: ${lotto_count}"),
+                              child: Text("Lotto Cerren: ${lotto_count}"),
                             ),
 
-                            Text("Lotto Found: ${lotto_have}"),
+                            Text("Lotto Reward: ${lotto_have}"),
                           ],
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          FilledButton(
-                            onPressed: () async {
-                              var to_set = await check_lotto_list();
-                              bool have = to_set["have"];
-                              int count = to_set["count"];
-
-                              setstateDialog2(() {
-                                lotto_have = have;
-                                lotto_count = count;
-                              });
-                            },
-                            child: Text("Check_Lotto"),
-                          ),
-                          if (lotto_have && lotto_count >= 5)
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
                             FilledButton(
-                              onPressed: () {
-                                developer.log("work");
-                                CheckForSure(0);
+                              onPressed: () async {
+                                var to_set = await check_lotto_list();
+                                bool have = to_set["have"];
+                                int count = to_set["count"];
+
+                                setstateDialog2(() {
+                                  lotto_have = have;
+                                  lotto_count = count;
+                                });
                               },
-                              child: Text("Random_Reward"),
+                              child: const Text("Check_Lotto"),
                             ),
-                        ],
+                            if (!lotto_have && lotto_count >= 5)
+                              FilledButton(
+                                onPressed: () {
+                                  developer.log("work");
+                                  CheckForSure(0);
+                                },
+                                child: const Text("Random_Reward"),
+                              ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -806,6 +842,31 @@ class _AdminContentState extends State<AdminContent> {
     }
   }
 
+  Future<void> getWining() async {
+    date_config(selectdate, selectmonth);
+    try {
+      developer.log(date_end.text);
+      final res = await http.get(
+        Uri.parse('$url/lotto/winning_lotto/date/${date_end.text}'),
+      );
+
+      if (res.statusCode != 200) {
+        developer.log("getWining: HTTP error ${res.statusCode}");
+        return;
+      }
+      List<WinningLotto> getWining = winningLottoFromJson(res.body);
+
+      if (getWining.isNotEmpty) {
+        lotto_mounth_wining = getWining;
+      } else {
+        developer.log("getWining: no results found");
+      }
+    } catch (e, st) {
+      developer.log("getWining error: $e");
+      developer.log("Stack trace: $st");
+    }
+  }
+
   List<String> Random_number(int number) {
     List<String> lotto_num_list = [];
     String lotto_num = '';
@@ -867,20 +928,21 @@ class _AdminContentState extends State<AdminContent> {
             developer.log(lotto.dateEnd.substring(0, 4));
             developer.log(lotto.dateEnd.substring(5, 7));
             developer.log(lotto.dateEnd.substring(8, 10));
-            have = true;
+            // have = true;
             count++;
           }
         }
       }
       continue;
     }
-    if (have) {
+    if (count > 0) {
+      have = await haveReward();
       // setState(() {
       //   lotto_count = count;
       //   lotto_have = have;
       // });
       developer.log("lotto have");
-      developer.log("Lotto_count: ${lotto_count}");
+      developer.log("Lotto_count: ${count}");
     } else {
       // setState(() {
       //   lotto_count = 0;
@@ -892,6 +954,27 @@ class _AdminContentState extends State<AdminContent> {
     }
     return {"have": have, "count": count};
     // developer.log(lottoList.toString());
+  }
+
+  Future<bool> haveReward() async {
+    try {
+      developer.log(date_end.text);
+      final res = await http.get(
+        Uri.parse('$url/lotto/winning_lotto/date/${date_end.text}'),
+      );
+
+      if (res.statusCode != 200) {
+        developer.log('haveReward: bad status ${res.statusCode}');
+        return false;
+      }
+
+      final List<WinningLotto> winningLotto = winningLottoFromJson(res.body);
+      developer.log('haveReward: count = ${winningLotto.length}');
+      return winningLotto.isNotEmpty; // true if >= 1
+    } catch (e, st) {
+      developer.log('haveReward error: $e\n$st');
+      return false;
+    }
   }
 
   void delete_user_lotto() {
@@ -911,22 +994,25 @@ class _AdminContentState extends State<AdminContent> {
                         "เลือกข้อมูลที่จะลบตามฟังก์ชันดังนี้",
                       ),
                       actions: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            FilledButton(
-                              onPressed: () {
-                                CheckForSure(2);
-                              },
-                              child: const Text("Delete Lottos"),
-                            ),
-                            FilledButton(
-                              onPressed: () {
-                                CheckForSure(3);
-                              },
-                              child: const Text("Delete Users"),
-                            ),
-                          ],
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              FilledButton(
+                                onPressed: () {
+                                  CheckForSure(2);
+                                },
+                                child: const Text("Delete Lottos"),
+                              ),
+                              FilledButton(
+                                onPressed: () {
+                                  CheckForSure(3);
+                                },
+                                child: const Text("Delete Users"),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -943,11 +1029,13 @@ class _AdminContentState extends State<AdminContent> {
   void delete_all_lotto() async {
     developer.log("delete all lotto work");
     var res = await http.delete(Uri.parse("$url/lotto/delete_lotto"));
+    var res = await http.delete(Uri.parse("$url/lotto/delete_lotto"));
     developer.log(res.body);
   }
 
   void delete_all_users() async {
     developer.log("delete users work");
+    var res = await http.delete(Uri.parse("$url/user/delete_users"));
     var res = await http.delete(Uri.parse("$url/user/delete_users"));
     developer.log(res.body);
   }

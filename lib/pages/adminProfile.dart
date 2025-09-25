@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:lotto_1/pages/login.dart';
 
 class Adminprofile extends StatefulWidget {
   int uid = 0;
@@ -7,7 +9,14 @@ class Adminprofile extends StatefulWidget {
   String? tel;
   int? roleId;
 
-  Adminprofile({super.key, required this.uid, this.name, this.email, this.tel, this.roleId});
+  Adminprofile({
+    super.key,
+    required this.uid,
+    this.name,
+    this.email,
+    this.tel,
+    this.roleId,
+  });
 
   @override
   State<Adminprofile> createState() => _AdminprofileState();
@@ -25,17 +34,28 @@ class _AdminprofileState extends State<Adminprofile> {
   void initState() {
     super.initState();
     getuserinfo();
-    
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.redAccent,
-      appBar: AppBar(title: Text('Admin Profile')),
+      appBar: AppBar(
+        title: Text('Admin Profile'),
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout_outlined),
+            onPressed: () {
+              logout();
+            },
+          ),
+        ],
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(
+          const SizedBox(
             child: Center(
               child: Text(
                 "ข้อมูลผู้ดูแลระบบ",
@@ -77,7 +97,7 @@ class _AdminprofileState extends State<Adminprofile> {
                   ),
                   TableRow(
                     children: [
-                      Text(
+                      const Text(
                         "อีเมล์",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
@@ -86,7 +106,7 @@ class _AdminprofileState extends State<Adminprofile> {
                   ),
                   TableRow(
                     children: [
-                      Text(
+                      const Text(
                         "เบอร์โทร",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
@@ -142,18 +162,36 @@ class _AdminprofileState extends State<Adminprofile> {
     );
   }
 
-void getuserinfo() {
-  setState(() {
-    // If widget.name is null, use an empty string '' as the default.
-    username = widget.name ?? '';
-    email = widget.email ?? '';
-    tel = widget.tel ?? '';
-    adminroleid = widget.roleId ?? 0; // Use 0 or another default value for int
-    if (adminroleid == 1) {
-      is_admin = 'ผู้ดูแลระบบ';
-    } else {
-      is_admin = 'ผู้ใช้ทั่วไป';
-    }
-  });
-}
+  void getuserinfo() {
+    setState(() {
+      // If widget.name is null, use an empty string '' as the default.
+      username = widget.name ?? '';
+      email = widget.email ?? '';
+      tel = widget.tel ?? '';
+      adminroleid =
+          widget.roleId ?? 0; // Use 0 or another default value for int
+      if (adminroleid == 1) {
+        is_admin = 'ผู้ดูแลระบบ';
+      } else {
+        is_admin = 'ผู้ใช้ทั่วไป';
+      }
+    });
+  }
+
+  void logout() {
+    Get.defaultDialog(
+      title: "แจ้งเตือน!",
+      textConfirm: "ยืนยัน",
+      confirmTextColor: Colors.white,
+      buttonColor: Colors.red,
+      middleText: "คุณต้องการออกจากระบบใช่ไหม?",
+      onConfirm: () {
+        Get.back();
+        Get.offAll(LoginPeges());
+      },
+      textCancel: "ยกเลิก",
+      cancelTextColor: Colors.black,
+      onCancel: () {},
+    );
+  }
 }
