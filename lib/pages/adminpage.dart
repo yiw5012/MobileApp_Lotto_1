@@ -102,6 +102,7 @@ class _AdminContentState extends State<AdminContent> {
   String? selectmonth;
   bool lotto_have = false;
   int lotto_count = 0;
+  List<WinningLotto> lotto_mounth_wining = [];
   // var random_lotto = List<String>;
   // var uid_lotto = List<int>;
   // List<String> = random_lotto = [];
@@ -184,7 +185,12 @@ class _AdminContentState extends State<AdminContent> {
                             width: 2.0,
                             color: const Color.fromARGB(255, 0, 0, 0),
                           ),
-                          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+                          backgroundColor: const Color.fromARGB(
+                            255,
+                            255,
+                            255,
+                            255,
+                          ),
                           // สีพื้นหลังปุ่ม
                         ),
                         onPressed: (Random_lotto_number),
@@ -210,8 +216,13 @@ class _AdminContentState extends State<AdminContent> {
                             width: 2.0,
                             color: const Color.fromARGB(255, 0, 0, 0),
                           ),
-                          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-                          
+                          backgroundColor: const Color.fromARGB(
+                            255,
+                            255,
+                            255,
+                            255,
+                          ),
+
                           // สีพื้นหลังปุ่ม
                         ),
                         onPressed: () {
@@ -244,7 +255,12 @@ class _AdminContentState extends State<AdminContent> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          backgroundColor: const Color.fromARGB(255, 10, 2, 159),
+                          backgroundColor: const Color.fromARGB(
+                            255,
+                            10,
+                            2,
+                            159,
+                          ),
                           // สีพื้นหลังปุ่ม
                         ),
                         child: Text(
@@ -256,35 +272,66 @@ class _AdminContentState extends State<AdminContent> {
                   ),
                 ),
               ),
-        
+
               Card(
                 child: Padding(
-                  padding: const EdgeInsets.all(1),
-                  child: SingleChildScrollView(
-                    child: Container(
-                      width: 400,
-                      height: 400,
-                      child: Column(
-                        children: const [
-                          Text(
-                            "รางวัลที่ 1",
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: 400,
+                    height: 400,
+                    child: lotto_mounth_wining.isEmpty
+                        ? const Center(
+                            child: Text(
+                              "ไม่มีรายการรางวัลที่จะแสดง",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
+                          )
+                        : ListView.builder(
+                            itemCount: lotto_mounth_wining.length,
+                            itemBuilder: (context, index) {
+                              final lotto = lotto_mounth_wining[index];
+                              return Card(
+                                margin: const EdgeInsets.symmetric(
+                                  vertical: 6,
+                                  horizontal: 8,
+                                ),
+                                elevation: 3,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "รางวัลที่ ${lotto.rank}",
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        lotto.winningLottoNumber,
+                                        style: const TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.blueAccent,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                          SizedBox(height: 10),
-                          Text(
-                            "123456",
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   ),
                 ),
               ),
@@ -616,7 +663,6 @@ class _AdminContentState extends State<AdminContent> {
                                 setstateDialog2(() {
                                   selectmonth = newvalue;
 
-                                  
                                   // developer.log("month: ${selectmonth.toString()}");
                                 });
 
@@ -655,7 +701,7 @@ class _AdminContentState extends State<AdminContent> {
                                 var to_set = await check_lotto_list();
                                 bool have = to_set["have"];
                                 int count = to_set["count"];
-                        
+
                                 setstateDialog2(() {
                                   lotto_have = have;
                                   lotto_count = count;
@@ -753,6 +799,30 @@ class _AdminContentState extends State<AdminContent> {
     }
   }
 
+  Future<void> getWining() async {
+    try {
+      final res = await http.get(
+        Uri.parse('$url/lotto/winning_lotto/date/${date_end.text}'),
+      );
+
+      if (res.statusCode != 200) {
+        developer.log("getWining: HTTP error ${res.statusCode}");
+        return;
+      }
+
+      List<WinningLotto> getWining = winningLottoFromJson(res.body);
+
+      if (getWining.isNotEmpty) {
+        lotto_mounth_wining = getWining;
+      } else {
+        developer.log("getWining: no results found");
+      }
+    } catch (e, st) {
+      developer.log("getWining error: $e");
+      developer.log("Stack trace: $st");
+    }
+  }
+
   List<String> Random_number(int number) {
     List<String> lotto_num_list = [];
     String lotto_num = '';
@@ -829,7 +899,6 @@ class _AdminContentState extends State<AdminContent> {
       // });
       developer.log("lotto have");
       developer.log("Lotto_count: ${count}");
-
     } else {
       // setState(() {
       //   lotto_count = 0;
@@ -843,24 +912,26 @@ class _AdminContentState extends State<AdminContent> {
     // developer.log(lottoList.toString());
   }
 
-Future<bool> haveReward() async {
-  try {
-    developer.log(date_end.text);
-    final res = await http.get(Uri.parse('$url/lotto/winning_lotto/date/${date_end.text}'));
+  Future<bool> haveReward() async {
+    try {
+      developer.log(date_end.text);
+      final res = await http.get(
+        Uri.parse('$url/lotto/winning_lotto/date/${date_end.text}'),
+      );
 
-    if (res.statusCode != 200) {
-      developer.log('haveReward: bad status ${res.statusCode}');
+      if (res.statusCode != 200) {
+        developer.log('haveReward: bad status ${res.statusCode}');
+        return false;
+      }
+
+      final List<WinningLotto> winningLotto = winningLottoFromJson(res.body);
+      developer.log('haveReward: count = ${winningLotto.length}');
+      return winningLotto.isNotEmpty; // true if >= 1
+    } catch (e, st) {
+      developer.log('haveReward error: $e\n$st');
       return false;
     }
-
-    final List<WinningLotto> winningLotto = winningLottoFromJson(res.body);
-    developer.log('haveReward: count = ${winningLotto.length}');
-    return winningLotto.isNotEmpty; // true if >= 1
-  } catch (e, st) {
-    developer.log('haveReward error: $e\n$st');
-    return false;
   }
-}
 
   void delete_user_lotto() {
     showDialog(
@@ -874,7 +945,6 @@ Future<bool> haveReward() async {
                 child: Center(
                   child: SingleChildScrollView(
                     child: AlertDialog(
-
                       title: const Text("ลบข้อมูลในฐานข้อมูล"),
                       content: const Text(
                         "เลือกข้อมูลที่จะลบตามฟังก์ชันดังนี้",
@@ -914,17 +984,13 @@ Future<bool> haveReward() async {
 
   void delete_all_lotto() async {
     developer.log("delete all lotto work");
-      var res = await http.delete(
-      Uri.parse("$url/lotto/delete_lotto"),
-    );
+    var res = await http.delete(Uri.parse("$url/lotto/delete_lotto"));
     developer.log(res.body);
   }
 
   void delete_all_users() async {
     developer.log("delete users work");
-      var res = await http.delete(
-      Uri.parse("$url/user/delete_users"),
-    );
+    var res = await http.delete(Uri.parse("$url/user/delete_users"));
     developer.log(res.body);
   }
 }
