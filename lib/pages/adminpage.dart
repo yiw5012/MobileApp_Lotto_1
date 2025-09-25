@@ -540,6 +540,12 @@ class _AdminContentState extends State<AdminContent> {
                     } else if (path == 3) {
                       delete_all_users();
                     }
+                    Get.snackbar(
+                      "เพิ่ม Lotto สำเร็จ !!",
+                      "เพิ่มสำเร็จ!!",
+                      backgroundColor: Colors.green,
+                    );
+
                     Navigator.of(context).pop();
                     Navigator.of(context).pop();
                   },
@@ -614,6 +620,7 @@ class _AdminContentState extends State<AdminContent> {
         headers: {"Content-Type": "application/json; charset=utf-8"},
         body: lottoInsertPostreqToJson(req),
       );
+      // Get.snackbar("เพิ่ม Lotto สำเร็จ !!", "เพิ่มสำเร็จ!!");
 
       developer.log("Inserted ${lotto_list[index]} → ${res.body}");
       final responseJson = jsonDecode(res.body);
