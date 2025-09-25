@@ -51,7 +51,6 @@ class _CartpageState extends State<Cartpage>
     return Scaffold(
       appBar: AppBar(
         title: const Text('ระบบลอตเตอรี่'),
-        automaticallyImplyLeading: false,
         backgroundColor: Colors.red,
         bottom: TabBar(
           controller: _tabController,
@@ -59,6 +58,10 @@ class _CartpageState extends State<Cartpage>
             Tab(icon: Icon(Icons.receipt_long), text: 'รายการซื้อ'),
             Tab(icon: Icon(Icons.payment), text: 'ตรวจหวย'),
           ],
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Get.offAll(() => HomePage(uid: widget.uid)),
         ),
       ),
       body: TabBarView(
@@ -209,6 +212,14 @@ class _PayMentOrderState extends State<PayMentOrder> {
                                         FilledButton(
                                           onPressed: () {
                                             Get.back();
+                                            Get.dialog(
+                                              Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              ),
+                                              barrierDismissible: false,
+                                            );
+
                                             check_lotto(
                                               widget.uid,
                                               order.lottoNumber,
@@ -319,7 +330,7 @@ class _PayMentOrderState extends State<PayMentOrder> {
                     backgroundColor: Colors.green,
                     colorText: Colors.white,
                   );
-                  Get.off(() => Cartpage(uid: uid));
+                  Get.off(() => Member(uid: uid));
                 } else {
                   Get.snackbar("ล้มเหลว", "ไม่สามารถขึ้นเงินได้");
                 }
@@ -337,11 +348,11 @@ class _PayMentOrderState extends State<PayMentOrder> {
             TextButton(
               onPressed: () {
                 Get.back(); // ✅ ปิด dialog ก่อน
-                Get.to(() {
-                  final cartState = Get.context
-                      ?.findAncestorStateOfType<_CartpageState>();
-                  cartState?.changeTab(1);
-                });
+                // Get.to(() {
+                //   final cartState = Get.context
+                //       ?.findAncestorStateOfType<_CartpageState>();
+                //   cartState?.changeTab(1);
+                // });
               },
               child: Text("ปิด"),
             ),
@@ -357,13 +368,6 @@ class _PayMentOrderState extends State<PayMentOrder> {
         log(responseJson["message"]);
       }
     }
-  }
-
-  void staypage() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final cartState = context.findAncestorStateOfType<_CartpageState>();
-      cartState?.changeTab(1);
-    });
   }
 }
 
@@ -460,6 +464,15 @@ class _PayMentPageState extends State<PayMentPage> {
                                         ),
                                         ElevatedButton(
                                           onPressed: () {
+                                            Get.back();
+                                            Get.dialog(
+                                              Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              ),
+                                              barrierDismissible: false,
+                                            );
+
                                             payOrder(
                                               widget.uid,
                                               order.oid,

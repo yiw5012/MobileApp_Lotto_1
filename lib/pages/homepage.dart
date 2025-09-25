@@ -289,10 +289,12 @@ class _HomeContentState extends State<HomeContent> {
                                               MainAxisAlignment.end,
                                           children: [
                                             ElevatedButton(
-                                              onPressed: () => saleLotto(
-                                                lotto.lid,
-                                                widget.user,
-                                              ),
+                                              onPressed: () {
+                                                saleLotto(
+                                                  lotto.lid,
+                                                  widget.user,
+                                                );
+                                              },
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor: Colors.red,
                                                 foregroundColor: Colors.white,
@@ -395,10 +397,14 @@ class _HomeContentState extends State<HomeContent> {
         );
         dev.log(res.body);
         if (res.statusCode == 201) {
+          Get.back();
           Get.defaultDialog(
             title: "คุณซื้อลอตเตอรี่สำเร็จ!!",
             middleText: "ไปหน้าชำระเงินเลยมั้ยยย",
-            onConfirm: () => Get.to(Cartpage(uid: uid)),
+            onConfirm: () {
+              Get.back();
+              Get.to(Cartpage(uid: uid));
+            },
 
             onCancel: () {},
             buttonColor: Colors.redAccent,
