@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:lotto_1/config/config.dart';
+import 'package:lotto_1/pages/login.dart';
 
 class Member extends StatefulWidget {
   final int uid; // uid จาก login
@@ -79,6 +81,14 @@ class _MemberState extends State<Member> {
           ),
         ),
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout_outlined),
+            onPressed: () {
+              logout();
+            },
+          ),
+        ],
       ),
 
       // The main content of the page, contained in a SingleChildScrollView
@@ -412,5 +422,22 @@ class _MemberState extends State<Member> {
         context,
       ).showSnackBar(SnackBar(content: Text("เกิดข้อผิดพลาด: $e")));
     }
+  }
+
+  void logout() {
+    Get.defaultDialog(
+      title: "แจ้งเตือน!",
+      textConfirm: "ยืนยัน",
+      confirmTextColor: Colors.white,
+      buttonColor: Colors.red,
+      middleText: "คุณต้องการออกจากระบบใช่ไหม?",
+      onConfirm: () {
+        Get.back();
+        Get.offAll(LoginPeges());
+      },
+      textCancel: "ยกเลิก",
+      cancelTextColor: Colors.black,
+      onCancel: () {},
+    );
   }
 }
