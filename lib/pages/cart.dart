@@ -349,7 +349,11 @@ class _PayMentOrderState extends State<PayMentOrder> {
                   backgroundColor: Colors.green,
                   colorText: Colors.white,
                 );
+
                 Get.off(() => Member(uid: uid));
+                setState(() {
+                  loadData = loadDataAsync();
+                });
               } else {
                 Get.snackbar("ล้มเหลว", "ไม่สามารถขึ้นเงินได้");
               }
