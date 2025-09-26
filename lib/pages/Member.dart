@@ -289,10 +289,34 @@ class _MemberState extends State<Member> {
                   Navigator.of(context).pop();
                   creditController.clear();
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("กรุณากรอกจำนวนเงินที่ถูกต้อง"),
-                    ),
+                  // ScaffoldMessenger.of(context).showSnackBar(
+                  //    const
+                  //    SnackBar(
+                  //     content: Text("กรุณากรอกจำนวนเงินที่ถูกต้อง"),
+                  //   ),
+                  // );
+                  Get.snackbar(
+                    "กรุณากรอกจำนวนเงินที่ถูกต้อง", // title
+                    "", // message
+                    snackPosition: SnackPosition.TOP, // โชว์ด้านบน
+                    backgroundColor: const Color.fromARGB(
+                      255,
+                      205,
+                      11,
+                      11,
+                    ), // สีพื้นหลัง
+                    colorText: Colors.white, // สีข้อความ
+                    icon: const Icon(
+                      Icons.check_circle,
+                      color: Colors.white,
+                    ), // ใส่ไอคอน
+                    borderRadius: 12, // มุมโค้ง
+                    margin: const EdgeInsets.all(16), // เว้นขอบรอบๆ
+                    duration: const Duration(seconds: 3), // เวลาโชว์
+                    animationDuration: const Duration(
+                      milliseconds: 500,
+                    ), // animation
+                    snackStyle: SnackStyle.FLOATING, // ให้ลอย ไม่ติดขอบ
                   );
                 }
               },
@@ -316,13 +340,37 @@ class _MemberState extends State<Member> {
         setState(() {
           money += amount; // อัปเดตยอดเงินใน UI
         });
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("เติมเงินสำเร็จ $amount บาท")));
+        // ScaffoldMessenger.of(
+        //   context,
+        // ).showSnackBar(SnackBar(content: Text("เติมเงินสำเร็จ $amount บาท")));
+        // Get.snackbar("เติมเงินสำเร็จ", "เติมเงิน $amount บาท");
+        Get.snackbar(
+          "เติมเงินสำเร็จ", // title
+          "เติมเงิน $amount บาท", // message
+          snackPosition: SnackPosition.TOP, // โชว์ด้านบน
+          backgroundColor: const Color.fromARGB(255, 66, 205, 11), // สีพื้นหลัง
+          colorText: Colors.white, // สีข้อความ
+          icon: const Icon(Icons.check_circle, color: Colors.white), // ใส่ไอคอน
+          borderRadius: 12, // มุมโค้ง
+          margin: const EdgeInsets.all(16), // เว้นขอบรอบๆ
+          duration: const Duration(seconds: 3), // เวลาโชว์
+          animationDuration: const Duration(milliseconds: 500), // animation
+          snackStyle: SnackStyle.FLOATING, // ให้ลอย ไม่ติดขอบ
+        );
       } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text("เติมเงินไม่สำเร็จ")));
+        Get.snackbar(
+          "เติมเงิน", // title
+          "เติมเงินไม่สำเร็จ", // message
+          snackPosition: SnackPosition.TOP, // โชว์ด้านบน
+          backgroundColor: const Color.fromARGB(255, 205, 11, 11), // สีพื้นหลัง
+          colorText: Colors.white, // สีข้อความ
+          icon: const Icon(Icons.check_circle, color: Colors.white), // ใส่ไอคอน
+          borderRadius: 12, // มุมโค้ง
+          margin: const EdgeInsets.all(16), // เว้นขอบรอบๆ
+          duration: const Duration(seconds: 3), // เวลาโชว์
+          animationDuration: const Duration(milliseconds: 500), // animation
+          snackStyle: SnackStyle.FLOATING, // ให้ลอย ไม่ติดขอบ
+        );
       }
     } catch (e) {
       ScaffoldMessenger.of(
@@ -410,13 +458,36 @@ class _MemberState extends State<Member> {
           email = emailController.text;
           tel = telController.text;
         });
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text("อัปเดตข้อมูลสำเร็จ")));
+        // ScaffoldMessenger.of(
+        //   context,
+        // ).showSnackBar(const SnackBar(content: Text("อัปเดตข้อมูลสำเร็จ")));
+        Get.snackbar(
+          "แก้ไขข้อมูล", // title
+          "แก้ไขข้อมูลสำเร็จ", // message
+          snackPosition: SnackPosition.TOP, // โชว์ด้านบน
+          backgroundColor: const Color.fromARGB(255, 66, 205, 11), // สีพื้นหลัง
+          colorText: Colors.white, // สีข้อความ
+          icon: const Icon(Icons.check_circle, color: Colors.white), // ใส่ไอคอน
+          borderRadius: 12, // มุมโค้ง
+          margin: const EdgeInsets.all(16), // เว้นขอบรอบๆ
+          duration: const Duration(seconds: 3), // เวลาโชว์
+          animationDuration: const Duration(milliseconds: 500), // animation
+          snackStyle: SnackStyle.FLOATING, // ให้ลอย ไม่ติดขอบ
+        );
       } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text("อัปเดตข้อมูลไม่สำเร็จ")));
+        Get.snackbar(
+          "แก้ไขข้อมูล", // title
+          "แก้ไขข้อมูลไม่สำเร็จ", // message
+          snackPosition: SnackPosition.TOP, // โชว์ด้านบน
+          backgroundColor: const Color.fromARGB(255, 205, 11, 11), // สีพื้นหลัง
+          colorText: Colors.white, // สีข้อความ
+          icon: const Icon(Icons.check_circle, color: Colors.white), // ใส่ไอคอน
+          borderRadius: 12, // มุมโค้ง
+          margin: const EdgeInsets.all(16), // เว้นขอบรอบๆ
+          duration: const Duration(seconds: 3), // เวลาโชว์
+          animationDuration: const Duration(milliseconds: 500), // animation
+          snackStyle: SnackStyle.FLOATING, // ให้ลอย ไม่ติดขอบ
+        );
       }
     } catch (e) {
       ScaffoldMessenger.of(
