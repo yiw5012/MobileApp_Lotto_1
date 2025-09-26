@@ -315,10 +315,21 @@ class _PayMentOrderState extends State<PayMentOrder> {
       var oid = data["oid"];
       int prize = data["prize"];
       var rank = data["rank"];
+      var extraPrizes = data["extraPrizes"] ?? [];
+
+      // สร้างข้อความรวมรางวัล
+      String prizeText = "คุณถูกรางวัล $prize บาท";
+
+      if (rank == 1 && extraPrizes.isNotEmpty) {
+        for (var extra in extraPrizes) {
+          prizeText +=
+              "\nถูกรางวัล${extra["prize_type"]} ${extra["prize_amount"]} บาท";
+        }
+      }
 
       Get.defaultDialog(
         title: 'คุณถูกรางวัลที่ $rank',
-        content: Text("คุณถูกรางวัล $prize บาท"),
+        content: Text(prizeText),
         actions: [
           TextButton(
             onPressed: () {
