@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:http/http.dart' as http;
 import 'package:lotto_1/config/config.dart';
 import 'package:lotto_1/model/response/winning_lotto_res.dart';
@@ -78,9 +80,23 @@ class _SellState extends State<Sell> {
   // ดึงผลรางวัลตามวันที่
   Future<void> fetchWinningLotto() async {
     if (selectedDate == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("กรุณาเลือกวันที่")));
+      // ScaffoldMessenger.of(
+      //   context,
+      // ).showSnackBar(const SnackBar(content: Text("กรุณาเลือกวันที่")));
+      // Get.snackbar("กรุณาเลือกวันที่", "ไม่สามารถค้นหาได้");
+      Get.snackbar(
+        "กรุณาเลือกวันที่", // title
+        "ไม่สามารถค้นหาได้", // message
+        snackPosition: SnackPosition.TOP, // โชว์ด้านบน
+        backgroundColor: const Color.fromARGB(255, 205, 11, 11), // สีพื้นหลัง
+        colorText: Colors.white, // สีข้อความ
+        icon: const Icon(Icons.check_circle, color: Colors.white), // ใส่ไอคอน
+        borderRadius: 12, // มุมโค้ง
+        margin: const EdgeInsets.all(16), // เว้นขอบรอบๆ
+        duration: const Duration(seconds: 3), // เวลาโชว์
+        animationDuration: const Duration(milliseconds: 500), // animation
+        snackStyle: SnackStyle.FLOATING, // ให้ลอย ไม่ติดขอบ
+      );
       return;
     }
 
@@ -141,39 +157,16 @@ class _SellState extends State<Sell> {
                 color: Colors.white,
               ),
               child: DropdownButton<String>(
-                hint: const Text(
-                  "เลือกงวด",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black54,
-                  ),
-                ),
-                value: selectedDate,
+                hint: const Text("เลือกงวด"),
+                value: (availableDates.isEmpty) ? 'no_date' : selectedDate,
                 isExpanded: true,
                 underline: const SizedBox(),
                 dropdownColor: Colors.white,
-                icon: const Icon(
-                  Icons.arrow_drop_down,
-                  color: Colors.redAccent,
-                ),
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                ),
                 items: availableDates.isEmpty
                     ? [
                         const DropdownMenuItem<String>(
                           value: 'no_date',
-                          child: Text(
-                            "ไม่มีงวดที่ออก",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Color.fromARGB(255, 0, 0, 0),
-                            ),
-                          ),
+                          child: Text("ไม่มีงวดที่ออก"),
                         ),
                       ]
                     : availableDates.map((dateString) {
@@ -182,17 +175,11 @@ class _SellState extends State<Sell> {
                             "งวดวันที่ ${dt.day} เดือน ${thaiMonths[dt.month]} ปี ${dt.year}";
                         return DropdownMenuItem<String>(
                           value: dateString,
-                          child: Text(
-                            formatted,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                          ),
+                          child: Text(formatted),
                         );
                       }).toList(),
                 onChanged: (availableDates.isEmpty)
-                    ? (value) {}
+                    ? null
                     : (value) {
                         setState(() {
                           selectedDate = value;
